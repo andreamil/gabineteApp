@@ -1,0 +1,84 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+	
+	<script>window.$ = window.jQuery = require('jquery');</script>
+	<link href="bootstrap/css/bootstrap2.css" rel="stylesheet">
+	<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.2/css/bootstrap-select.min.css">
+
+<!-- Latest compiled and minified JavaScript -->
+
+<script src="js/popper.min.js"></script>
+<script src="bootstrap/js/bootstrap.min.js"></script>
+<script src="js/combodate.js"></script>
+<script src="js/moment-with-locales.min.js"></script>
+	<script type="text/javascript">	
+		$(document).ready(function () {
+		
+			$.getJSON('estados_cidades.json', function (data) {
+
+				var items = [];
+				var options = '';	
+
+				$.each(data, function (key, val) {
+					options += '<option value="' + val.nome + '">' + val.nome + '</option>';
+				});					
+				$("#estados").html(options);				
+				$("#estados").val("Santa Catarina");			
+
+				$("#estados").change(function () {				
+				
+					var options_cidades = '';
+					var str = "";					
+					
+					$("#estados option:selected").each(function () {
+						str += $(this).text();
+					});
+					
+					$.each(data, function (key, val) {
+						if(val.nome == str) {							
+							$.each(val.cidades, function (key_city, val_city) {
+								options_cidades += '<option value="' + val_city + '">' + val_city + '</option>';
+							});							
+						}
+					});
+
+					$("#cidades").html(options_cidades).selectpicker('refresh');
+				}).change();		
+						
+				$("#cidades").val("Araranguá").selectpicker('refresh').attr("style","display: block;");
+				$('#estados').selectpicker().attr("style","display: block;");
+				
+			});
+		});
+		
+	</script>		
+	
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.2/js/bootstrap-select.min.js"></script>
+</head>
+
+<body>
+
+<form>
+		<input type="text" id="data" data-format="YYYY-MM-DD" data-template="D MMM YYYY" name="dataNascimento" value="1980-01-01">
+		<script>
+		$(function(){
+			
+			moment.locale('pt-br');   
+			$('#data').combodate(); 
+		});
+		</script>
+		<!-- Estado -->
+		<select data-live-search="true" id="estados">
+		</select>
+		<select data-live-search="true" id="cidades">
+		</select>
+		
+			  
+</form>
+
+</body>
+
+</html>

@@ -1,0 +1,166 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<!-- PAGE settings -->
+		<link rel="icon" href="https://templates.pingendo.com/assets/Pingendo_favicon.ico">
+		<title>Cadastro</title>
+		<link rel="stylesheet" href="wireframe.css">    
+	<script>window.$ = window.jQuery = require('jquery');</script>
+	<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.2/css/bootstrap-select.min.css">
+
+<!-- Latest compiled and minified JavaScript -->
+	
+
+</head>
+
+<body>
+		<body class="bg-light">
+				<div class="">
+				  <div class="container">
+					<div class="row">
+					  <div class="col-md-12 order-md-1">
+						<h4 class="mb-3"><b>Cadastrar indivíduo</b><br></h4>
+						<form class="needs-validation" novalidate="" id="cadastro">
+							<div class="mb-3"> <label for="nomeCompleto">Nome completo</label>
+							  <input type="text" class="form-control" placeholder="" value="" required="required" id="nomeCompleto" name="nomeCompleto" >
+							  <div class="invalid-feedback"> Nome completo é obrigatório. </div>
+							</div>
+
+						  <div class="row">
+								<div class="col-md-6 mb-3"> <label for="apelido">Apelido</label>
+								  <input type="text" class="form-control" placeholder="" value="" id="apelido" name="apelido">
+								  <div class="invalid-feedback"> Valid first name is required. </div>
+								</div>
+								<div class="col-md-6 mb-3"> <label for="dataDeNascimento">Data de Nascimento<br></label>
+									<input type="text" id="dataDeNascimento" name="dataDeNascimento" data-smartDays="true" data-format="MM-DD-YYYY" data-template="D MMM YYYY" name="date" value="01-01-1980" required="required" >
+									<script>
+									$(function(){
+										moment.locale('pt-br');   
+										$('#dataDeNascimento').combodate({
+											minYear: 1900,
+											maxYear: 2019,
+											smartDays: true
+										}); 
+										$('.combodate').attr("style","display: block;");
+										$('.day,.month,.year').attr("style","    border: 1px solid #ced4da;    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);display: inline-block;height: calc(2.25rem + 2px);padding: 4px 6px;margin-bottom: 10px;font-size: 14px;line-height: 20px;color: #555555;vertical-align: middle;-webkit-border-radius: 4px;-moz-border-radius: 4px;border-radius: 4px;");
+									
+									});
+									</script>
+								  <div class="invalid-feedback"> Valid last name is required. </div>
+								</div>
+							  </div>
+						  <div class="mb-3"> <label for="email">Email <span class="text-muted">(Opcional)</span></label>
+							<input type="email" class="form-control" id="email" name="email" placeholder="voce@exemplo.com">
+							<div class="invalid-feedback"> Insira um email válido. </div>
+						  </div>
+						  <hr class="mb-4">
+						  <div class="row">
+							<div class="col-md-4 mb-3"> <label for="estado">Estado</label> 
+							  <div><select  data-live-search="true" id="estados" name="estado" required="required">
+								</select></div>
+							  <div class="invalid-feedback"> Escolha um estado. </div>
+							</div>
+							<div class="col-md-4 mb-3"> <label for="cidade">Cidade</label> 
+								<div><select data-live-search="true"  id="cidades" name="cidade" required="required">
+								</select></div>
+							  <div class="invalid-feedback"> Escolha uma cidade. </div>
+							</div>
+							<div class="col-md-4 mb-3"> <label for="cep">CEP</label>
+							  <input type="text" class="form-control" id="cep" name="cep" placeholder="" required="required">
+							  <div class="invalid-feedback"> CEP é obrigatório. </div>
+							</div>
+						  </div>
+						  <div class="row">
+							<div class="col-md-4 mb-3"> <label for="rua">Endereço</label>
+							  <input type="text" class="form-control" placeholder="Ex: Rua..." value="" required="required" id="rua" name="rua">
+							  <div class="invalid-feedback"> Endereço é obrigatório. </div>
+							</div>
+							<div class="col-md-4 mb-3"> <label for="bairro">Bairro</label>
+							  <input type="text" class="form-control" id="bairro" name="bairro" placeholder="" value="" required="required">
+							  <div class="invalid-feedback"> Bairro é obrigatório. </div>
+							</div>
+							<div class="col-md-4 mb-3"> <label for="numero">Número</label>
+							  <input type="text" class="form-control" id="numero" name="numero" placeholder="" value="" required="required">
+							  <div class="invalid-feedback"> Número é obrigatório. </div>
+							</div>
+						  </div>
+						  <div class="mb-3"> <label for="observacoes">Observações<span class="text-muted"> (Opcional)</span><br></label>
+							  <input type="text" class="form-control" id="observacoes" name="observacoes" >
+							</div>
+						  <hr class="mb-4">
+						  <div class="row">
+							<div class="col-md-6 mb-3"> <label for="telefone">Telefone<span class="text-muted"> (Opcional)</span></label>
+							  <input type="text" class="form-control" placeholder="Ex: Rua..." value="" id="telefone" name="telefone">
+							</div>
+							<div class="col-md-6 mb-3"> <label for="celular">Celular</label>
+							  <input type="text" class="form-control" id="celular" name="celular" placeholder="" value="" required="required">
+							  <div class="invalid-feedback"> Celular é obrigatório. </div>
+							</div>
+						  </div>
+						  <div class="mb-3"> <label for="funcao">Função<span class="text-muted"> (Opcional)</span></label>
+							<input type="text" class="form-control" id="funcao" name="funcao">
+						  </div>
+						  <hr class="mb-4">
+						  <button class="btn btn-large btn-default" id="btn-cancelar">Cancelar<br></button>
+						  <button class="btn btn-large btn-primary" type="submit" style="float: right;">Cadastrar Indivíduo<br></button>
+						</form>
+						<p id="response"></p>
+					  </div>
+					</div>
+				  </div>
+				</div>
+			  </body>
+			  
+				<script type="text/javascript">	
+					$(document).ready(function () {
+						
+						$.getJSON('estados_cidades.json', (data) => {
+
+							var items = [];
+							var options = '';	
+
+							$.each(data, function (key, val) {
+								options += '<option value="' + val.nome + '">' + val.nome + '</option>';
+							});					
+							$("#estados").html(options);				
+							$("#estados").val('Santa Catarina');			
+
+							$("#estados").change(function () {				
+							
+								var options_cidades = '';
+								var str = "";					
+								
+								$("#estados option:selected").each(function () {
+									str += $(this).text();
+								});
+								
+								$.each(data, function (key, val) {
+									if(val.nome == str) {							
+										$.each(val.cidades, function (key_city, val_city) {
+											options_cidades += '<option value="' + val_city + '">' + val_city + '</option>';
+										});							
+									}
+								});
+
+								$("#cidades").html(options_cidades).selectpicker('refresh');
+							}).change();		
+									
+							$("#cidades").val('Araranguá').selectpicker('refresh').attr("style","display: block;");
+							$('#estados').selectpicker().attr("style","display: block;");
+							
+						});
+					});
+					
+				</script>		
+			  <script src="js/combodate.js"></script>
+			  <script src="js/moment-with-locales.min.js"></script>
+			  <script src="js/popper.min.js"></script>
+			  <script src="bootstrap/js/bootstrap.min.js"></script>
+			  <script src="js/bootstrap-select.min.js"></script>
+			  <script src="js/validation.js"></script>
+</body>
+
+</html>

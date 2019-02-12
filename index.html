@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Olá Mundo!</title>
+
+    <link rel="stylesheet" href="./photon-0.1.2-dist/css/photon.min.css">
+    <link href="fancygrid/fancy.min.css" rel="stylesheet">
+    <script src="fancygrid/fancy.full.formated.min.js"></script>         
+    <script>
+      const ipcRenderer = require('electron').ipcRenderer;
+    </script>
+  </head>
+  <body>
+    <div class="window">
+        <header class="toolbar toolbar-header" style="-webkit-app-region: drag;">
+          
+          <div class="toolbar-actions" >
+  
+            <div class="btn-group">
+              <button class="btn btn-large btn-default">
+                <span class="icon icon-list" style="width: auto;height: auto;font-size: 16px;"></span>
+              </button>
+              <button class="btn btn-large btn-default" id="btn-cadastro">
+                <span class="icon icon-user-add" style="width: auto;height: auto;font-size: 16px;"></span>
+              </button>
+            </div>
+  
+            <div class="btn-group">
+                <button class="btn btn-large btn-default">
+                  <span class="icon icon-calendar"style="width: auto;height: auto;font-size: 16px;"></span>
+                </button>
+              </div>
+  
+            <button class="btn btn-large btn-default btn-dropdown pull-right js-popover-trigger">
+              <span class="icon icon-megaphone"></span>
+            </button>
+          </div>
+        </header>
+  
+        <div class="window-content">
+          <div class="pane-group">
+            <div class="pane pane-sm sidebar">
+                <nav class="nav-group" id="nav-cidades">
+                  <h5 class="nav-group-title">Cidades</h5>
+                  <span class="nav-group-item">
+                    <span class="icon icon-network"></span>
+                    Araranguá
+                  </span>
+                  <span class="nav-group-item">
+                    <span class="icon icon-network"></span>
+                    Criciúma
+                  </span>
+                  <span class="nav-group-item">
+                    <span class="icon icon-network"></span>
+                    Tubarão
+                  </span>
+                </nav>
+                <nav class="nav-group" id="nav-cidades">
+                  <h5 class="nav-group-title">Aniversariantes</h5>
+                  <span class="nav-group-item">
+                    <span class="icon icon-calendar"></span>
+                    do Dia
+                  </span>
+                  <span class="nav-group-item">
+                    <span class="icon icon-calendar"></span>
+                    da Semana
+                  </span>
+                  <span class="nav-group-item">
+                    <span class="icon icon-calendar"></span>
+                    do Mes
+                  </span>
+                </nav>
+            </div>
+            <div class="pane">
+                <div id="staff" style=""></div>
+                <div id="edit-form" style=""></div>
+                <div id="grid" style=""></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <script>
+         var data = [
+  {id: 1, nomeCompleto: 'Ted Smith', email: 'Java Developer', dataDeNascimento: '06/22/1953', cidade: 'USA', celular: 48988888888, funcao: 'asdasdasd'},
+  {id: 2, nomeCompleto: 'Ed Johnson', email: 'C/C++ Market Data Developer', dataDeNascimento: '09/12/1971', cidade: 'England', celular: 48988888888, funcao: 'asdasdasd'},
+  {id: 3, nomeCompleto: 'Sam Williams', email: 'Technical Analyst', dataDeNascimento: '09/02/1973', cidade: 'USA', celular: 48988888888, funcao: 'asdasdasd'},
+  {id: 4, nomeCompleto: 'Alexander Brown', email: 'Project Manager', cidade: 'USA', dataDeNascimento: '09/25/1991', celular: 48988888888, funcao: 'asdasdasd'},
+  {id: 5, nomeCompleto: 'Nicholas Miller', email: 'Senior Software Engineer', cidade: 'Canada', dataDeNascimento: '08/24/1959', celular: 48988888888, funcao: 'asdasdasd'},
+  {id: 6, nomeCompleto: 'Andrew Thompson', email: 'Agile Project Manager', cidade: 'Germany', dataDeNascimento: '08/18/1978', celular: 48988888888, funcao: 'asdasdasd'},
+  {id: 7, nomeCompleto: 'Ryan Walker', email: 'Application Support Engineer', cidade: 'England', dataDeNascimento: '04/02/1981', celular: 48988888888, funcao: 'asdasdasd'},
+  {id: 8, nomeCompleto: 'John Scott', email: 'Flex Developer', cidade: 'USA', dataDeNascimento: '02/14/1960', celular: 48988888888, funcao: 'asdasdasd'},
+  {id: 9, nomeCompleto: 'James Phillips', email: 'Senior C++/C# Developer', cidade: 'USA', dataDeNascimento: '10/18/1991', celular: 48988888888, funcao: 'asdasdasd'},
+  {id: 10, nomeCompleto: 'Brian Edwards', email: 'UNIX/C++ Developer', cidade: 'USA', dataDeNascimento: '04/16/1963', celular: 48988888888, funcao: 'asdasdasd'},
+  {id: 11, nomeCompleto: 'Jack Richardson', email: 'Ruby Developer', cidade: 'Germany', dataDeNascimento: '11/20/1982', celular: 48988888888, funcao: 'asdasdasd'},
+  {id: 12, nomeCompleto: 'Alex Howard', email: 'CSS3/HTML5 Developer', cidade: 'USA', dataDeNascimento: '07/22/1987', celular: 48988888888, funcao: 'asdasdasd'},
+  {id: 13, nomeCompleto: 'Carlos Wood', email: 'Node.js Developer', cidade: 'USA', dataDeNascimento: '08/08/1988', celular: 48988888888, funcao: 'asdasdasd'},
+  {id: 14, nomeCompleto: 'Adrian Russell', email: 'Frontend Developer', cidade: 'Canada', dataDeNascimento: '06/19/1969', celular: 48988888888, funcao: 'asdasdasd'},
+  {id: 15, nomeCompleto: 'Jeremy Hamilton', email: 'Scala Developer', cidade: 'USA', dataDeNascimento: '04/17/1950', celular: 48988888888, funcao: 'asdasdasd'},
+  {id: 16, nomeCompleto: 'Ivan Woods', email: 'Objective C Developer', cidade: 'USA', dataDeNascimento: '03/25/1964', celular: 48988888888, funcao: 'asdasdasd'},
+  {id: 17, nomeCompleto: 'Peter West', email: 'PHP/HTML Developer', cidade: 'England', dataDeNascimento: '09/06/1977', celular: 48988888888, funcao: 'asdasdasd'},
+  {id: 18, nomeCompleto: 'Lorenzo Tucker', email: 'Architect', cidade: 'USA', dataDeNascimento: '10/25/1975', celular: 48988888888, funcao: 'asdasdasd'},
+  {id: 19, nomeCompleto: 'Randy Grant', email: 'Engineer', cidade: 'USA', dataDeNascimento: '07/16/1969', celular: 48988888888, funcao: 'asdasdasd'},
+  {id: 20, nomeCompleto: 'Arthur Gardner', email: 'Analytic', cidade: 'USA', dataDeNascimento: '09/26/1994', celular: 48988888888, funcao: 'asdasdasd'},
+  {id: 21, nomeCompleto: 'Orlando Ruiz', email: 'Unit Testing Developer', cidade: 'Germany', dataDeNascimento: '11/02/1985', celular: 48988888888, funcao: 'asdasdasd'},
+  {id: 22, nomeCompleto: 'Ted Smith', email: 'Java Developer', cidade: 'Canada', dataDeNascimento: '03/20/1976', celular: 48988888888, funcao: 'asdasdasd'},
+  {id: 23, nomeCompleto: 'Ed Johnson', email: 'C/C++ Market Data Developer', cidade: 'USA', dataDeNascimento: '06/07/1985', celular: 48988888888, funcao: 'asdasdasd'},
+  {id: 24, nomeCompleto: 'Sam Williams', email: 'Technical Analyst', cidade: 'USA', dataDeNascimento: '06/23/1981', celular: 48988888888, funcao: 'asdasdasd'},
+  {id: 25, nomeCompleto: 'Alexander Brown', email: 'Project Manager', cidade: 'England', dataDeNascimento: '03/12/1989', celular: 48988888888, funcao: 'asdasdasd'},
+  {id: 26, nomeCompleto: 'Nicholas Miller', email: 'Senior Software Engineer', cidade: 'England', dataDeNascimento: '08/03/1967', celular: 48988888888, funcao: 'asdasdasd'},
+  {id: 27, nomeCompleto: 'Andrew Thompson', email: 'Agile Project Manager', cidade: 'USA', dataDeNascimento: '11/17/1993', celular: 48988888888, funcao: 'asdasdasd'},
+  {id: 28, nomeCompleto: 'Ryan Walker', email: 'Application Support Engineer', cidade: 'USA', dataDeNascimento: '01/27/1963', celular: 48988888888, funcao: 'asdasdasd'},
+  {id: 29, nomeCompleto: 'John Scott', email: 'Flex Developer', cidade: 'USA', dataDeNascimento: '01/06/1983', celular: 48988888888, funcao: 'asdasdasd'},
+  {id: 30, nomeCompleto: 'James Phillips', email: 'Senior C++/C# Developer', cidade: 'Germany', dataDeNascimento: '01/06/1972', celular: 48988888888, funcao: 'asdasdasd'},
+  {id: 31, nomeCompleto: 'Brian Edwards', email: 'UNIX/C++ Developer', cidade: 'Canada', dataDeNascimento: '10/07/1954', celular: 48988888888, funcao: 'asdasdasd'},
+  {id: 32, nomeCompleto: 'Jack Richardson', email: 'Ruby Developer', cidade: 'USA', dataDeNascimento: '01/03/1987', celular: 48988888888, funcao: 'asdasdasd'},
+  {id: 33, nomeCompleto: 'Alex Howard', email: 'CSS3/HTML5 Developer', cidade: 'USA', dataDeNascimento: '01/27/1984', celular: 48988888888, funcao: 'asdasdasd'},
+  {id: 34, nomeCompleto: 'Carlos Wood', email: 'Node.js Developer', cidade: 'England', dataDeNascimento: '03/08/1966', celular: 48988888888, funcao: 'asdasdasd'},
+  {id: 35, nomeCompleto: 'Adrian Russell', email: 'Frontend Developer', cidade: 'USA', dataDeNascimento: '01/26/1970', celular: 48988888888, funcao: 'asdasdasd'},
+  {id: 36, nomeCompleto: 'Jeremy Hamilton', email: 'Scala Developer', cidade: 'USA', dataDeNascimento: '01/18/1981', celular: 48988888888, funcao: 'asdasdasd'},
+  {id: 37, nomeCompleto: 'Ivan Woods', email: 'Objective C Developer', cidade: 'Canada', dataDeNascimento: '03/27/1982', celular: 48988888888, funcao: 'asdasdasd'},
+  {id: 38, nomeCompleto: 'Peter West', email: 'PHP/HTML Developer', cidade: 'Germany', dataDeNascimento: '01/17/1986', celular: 48988888888, funcao: 'asdasdasd'},
+  {id: 39, nomeCompleto: 'Scott Simpson', email: 'Designer', cidade: 'USA', dataDeNascimento: '09/13/1969', celular: 48988888888, funcao: 'asdasdasd'},
+  {id: 40, nomeCompleto: 'Lorenzo Tucker', email: 'Architect', cidade: 'USA', dataDeNascimento: '05/04/1959', celular: 48988888888, funcao: 'asdasdasd'},
+  {id: 41, nomeCompleto: 'Randy Grant', email: 'Engineer', cidade: 'USA', dataDeNascimento: '07/01/1976', celular: 48988888888, funcao: 'asdasdasd'},
+  {id: 42, nomeCompleto: 'Arthur Gardner', email: 'Analytic', cidade: 'England', dataDeNascimento: '10/19/1970', celular: 48988888888, funcao: 'asdasdasd'},
+  {id: 43, nomeCompleto: 'Orlando Ruiz', email: 'Unit Testing Developer', cidade: 'USA', dataDeNascimento: '05/17/1992', celular: 48988888888, funcao: 'asdasdasd'},
+  {id: 44, nomeCompleto: 'Ted Smith', email: 'Java Developer', cidade: 'USA', dataDeNascimento: '08/19/1982', celular: 48988888888, funcao: 'asdasdasd'},
+  {id: 45, nomeCompleto: 'Ed Johnson', email: 'C/C++ Market Data Developer', cidade: 'Canada', dataDeNascimento: '04/12/1970', celular: 48988888888, funcao: 'asdasdasd'},
+  {id: 46, nomeCompleto: 'Sam Williams', email: 'Technical Analyst', cidade: 'Germany', dataDeNascimento: '04/23/1981', celular: 48988888888, funcao: 'asdasdasd'},
+  {id: 47, nomeCompleto: 'Alexander Brown', email: 'Project Manager', cidade: 'USA', dataDeNascimento: '09/10/1970', celular: 48988888888, funcao: 'asdasdasd'},
+  {id: 48, nomeCompleto: 'Nicholas Miller', email: 'Senior Software Engineer', cidade: 'USA', dataDeNascimento: '03/26/1964', celular: 48988888888, funcao: 'asdasdasd'},
+  {id: 49, nomeCompleto: 'Andrew Thompson', email: 'Agile Project Manager', cidade: 'USA', dataDeNascimento: '02/18/1984', celular: 48988888888, funcao: 'asdasdasd'},
+  {id: 50, nomeCompleto: 'Ryan Walker', email: 'Application Support Engineer', cidade: 'England', dataDeNascimento: '01/14/1989', celular: 48988888888, funcao: 'asdasdasd'},
+  {id: 51, nomeCompleto: 'John Scott', email: 'Flex Developer', cidade: 'USA', dataDeNascimento: '02/13/1985', celular: 48988888888, funcao: 'asdasdasd'},
+  {id: 52, nomeCompleto: 'James Phillips', email: 'Senior C++/C# Developer', cidade: 'Canada', dataDeNascimento: '06/22/1978', celular: 48988888888, funcao: 'asdasdasd'},
+  {id: 53, nomeCompleto: 'Brian Edwards', email: 'UNIX/C++ Developer', cidade: 'USA', dataDeNascimento: '03/19/1991', celular: 48988888888, funcao: 'asdasdasd'},
+  {id: 54, nomeCompleto: 'Jack Richardson', email: 'Ruby Developer', cidade: 'USA', dataDeNascimento: '09/01/1966', celular: 48988888888, funcao: 'asdasdasd'},
+  {id: 55, nomeCompleto: 'Alex Howard', email: 'CSS3/HTML5 Developer', cidade: 'USA', dataDeNascimento: '06/19/1993', celular: 48988888888, funcao: 'asdasdasd'},
+  {id: 56, nomeCompleto: 'Carlos Wood', email: 'Node.js Developer', cidade: 'Germany', dataDeNascimento: '05/18/1963', celular: 48988888888, funcao: 'asdasdasd'},
+  {id: 57, nomeCompleto: 'Adrian Russell', email: 'Frontend Developer', cidade: 'England', dataDeNascimento: '01/15/1957', celular: 48988888888, funcao: 'asdasdasd'},
+  {id: 58, nomeCompleto: 'Jeremy Hamilton', email: 'Scala Developer', cidade: 'USA', dataDeNascimento: '11/15/1975', celular: 48988888888, funcao: 'asdasdasd'},
+  {id: 59, nomeCompleto: 'Ivan Woods', email: 'Objective C Developer', cidade: 'USA', dataDeNascimento: '11/01/1974', celular: 48988888888, funcao: 'asdasdasd'},
+  {id: 60, nomeCompleto: 'Peter West', email: 'PHP/HTML Developer', cidade: 'USA', dataDeNascimento: '04/12/1954', celular: 48988888888, funcao: 'asdasdasd'},
+  {id: 61, nomeCompleto: 'Scott Simpson', email: 'Designer', cidade: 'USA', dataDeNascimento: '05/05/1978', celular: 48988888888, funcao: 'asdasdasd'},
+  {id: 62, nomeCompleto: 'Lorenzo Tucker', email: 'Architect', cidade: 'Canada', dataDeNascimento: '10/17/1990', celular: 48988888888, funcao: 'asdasdasd'},
+  {id: 63, nomeCompleto: 'Randy Grant', email: 'Engineer', cidade: 'USA', dataDeNascimento: '05/01/1973', celular: 48988888888, funcao: 'asdasdasd'},
+  {id: 64, nomeCompleto: 'Arthur Gardner', email: 'Analytic', cidade: 'USA', dataDeNascimento: '06/20/1961', celular: 48988888888, funcao: 'asdasdasd'},
+  {id: 65, nomeCompleto: 'Orlando Ruiz', email: 'Unit Testing Developer', cidade: 'USA', dataDeNascimento: '09/10/1956', celular: 48988888888, funcao: 'asdasdasd'},
+  {id: 66, nomeCompleto: 'Ted Smith', email: 'Java Developer', cidade: 'Germany', dataDeNascimento: '03/22/1959', celular: 48988888888, funcao: 'asdasdasd'},
+  {id: 67, nomeCompleto: 'Ed Johnson', email: 'C/C++ Market Data Developer', cidade: 'USA', dataDeNascimento: '07/15/1958', celular: 48988888888, funcao: 'asdasdasd'},
+  {id: 68, nomeCompleto: 'Sam Williams', email: 'Technical Analyst', cidade: 'England', dataDeNascimento: '01/12/1988', celular: 48988888888, funcao: 'asdasdasd'},
+  {id: 69, nomeCompleto: 'Alexander Brown', email: 'Project Manager', cidade: 'Canada', dataDeNascimento: '09/23/1982', celular: 48988888888, funcao: 'asdasdasd'},
+  {id: 70, nomeCompleto: 'Nicholas Miller', email: 'Senior Software Engineer', cidade: 'USA', dataDeNascimento: '05/02/1957', celular: 48988888888, funcao: 'asdasdasd'},
+  {id: 71, nomeCompleto: 'Andrew Thompson', email: 'Agile Project Manager', cidade: 'USA', dataDeNascimento: '05/08/1954', celular: 48988888888, funcao: 'asdasdasd'},
+  {id: 72, nomeCompleto: 'Ryan Walker', email: 'Application Support Engineer', cidade: 'USA', dataDeNascimento: '06/24/1983', celular: 48988888888, funcao: 'asdasdasd'},
+  {id: 73, nomeCompleto: 'John Scott', email: 'Flex Developer', cidade: 'Germany', dataDeNascimento: '07/06/1963', celular: 48988888888, funcao: 'asdasdasd'},
+  {id: 74, nomeCompleto: 'James Phillips', email: 'Senior C++/C# Developer', cidade: 'USA', dataDeNascimento: '01/13/1986', celular: 48988888888, funcao: 'asdasdasd'},
+  {id: 75, nomeCompleto: 'Brian Edwards', email: 'UNIX/C++ Developer', cidade: 'USA', dataDeNascimento: '02/14/1988', celular: 48988888888, funcao: 'asdasdasd'},
+  {id: 76, nomeCompleto: 'Jack Richardson', email: 'Ruby Developer', cidade: 'England', dataDeNascimento: '08/14/1963', celular: 48988888888, funcao: 'asdasdasd'},
+  {id: 77, nomeCompleto: 'Alex Howard', email: 'CSS3/HTML5 Developer', cidade: 'USA', dataDeNascimento: '08/05/1950', celular: 48988888888, funcao: 'asdasdasd'},
+  {id: 78, nomeCompleto: 'Carlos Wood', email: 'Node.js Developer', cidade: 'Canada', dataDeNascimento: '05/02/1973', celular: 48988888888, funcao: 'asdasdasd'},
+  {id: 79, nomeCompleto: 'Adrian Russell', email: 'Frontend Developer', cidade: 'USA', dataDeNascimento: '08/21/1980', celular: 48988888888, funcao: 'asdasdasd'},
+  {id: 80, nomeCompleto: 'Jeremy Hamilton', email: 'Scala Developer', cidade: 'Germany', dataDeNascimento: '11/23/1970', celular: 48988888888, funcao: 'asdasdasd'},
+  {id: 81, nomeCompleto: 'Ivan Woods', email: 'Objective C Developer', cidade: 'USA', dataDeNascimento: '03/15/1971', celular: 48988888888, funcao: 'asdasdasd'},
+  {id: 82, nomeCompleto: 'Peter West', email: 'PHP/HTML Developer', cidade: 'USA', dataDeNascimento: '11/15/1953', celular: 48988888888, funcao: 'asdasdasd'},
+  {id: 83, nomeCompleto: 'Scott Simpson', email: 'Designer', cidade: 'USA', dataDeNascimento: '01/16/1990', celular: 48988888888, funcao: 'asdasdasd'},
+  {id: 84, nomeCompleto: 'Lorenzo Tucker', email: 'Architect', cidade: 'USA', dataDeNascimento: '06/13/1992', celular: 48988888888, funcao: 'asdasdasd'},
+  {id: 85, nomeCompleto: 'Randy Grant', email: 'Engineer', cidade: 'England', dataDeNascimento: '10/15/1986', celular: 48988888888, funcao: 'asdasdasd'},
+  {id: 86, nomeCompleto: 'Arthur Gardner', email: 'Analytic', cidade: 'Germany', dataDeNascimento: '08/10/1969', celular: 48988888888, funcao: 'asdasdasd'},
+  {id: 87, nomeCompleto: 'Orlando Ruiz', email: 'Unit Testing Developer', cidade: 'Canada', dataDeNascimento: '04/19/1992', celular: 48988888888, funcao: 'asdasdasd'},
+  {id: 88, nomeCompleto: 'Ted Smith', email: 'Java Developer', cidade: 'USA', dataDeNascimento: '05/16/1981', celular: 48988888888, funcao: 'asdasdasd'},
+  {id: 89, nomeCompleto: 'Ed Johnson', email: 'C/C++ Market Data Developer', cidade: 'USA', dataDeNascimento: '09/07/1954', celular: 48988888888, funcao: 'asdasdasd'},
+  {id: 90, nomeCompleto: 'Sam Williams', email: 'Technical Analyst', cidade: 'USA', dataDeNascimento: '09/06/1968', celular: 48988888888, funcao: 'asdasdasd'},
+  {id: 91, nomeCompleto: 'Alexander Brown', email: 'Project Manager', cidade: 'USA', dataDeNascimento: '03/15/1973', celular: 48988888888, funcao: 'asdasdasd'},
+  {id: 92, nomeCompleto: 'Nicholas Miller', email: 'Senior Software Engineer', cidade: 'Germany', dataDeNascimento: '02/19/1968', celular: 48988888888, funcao: 'asdasdasd'},
+  {id: 93, nomeCompleto: 'Andrew Thompson', email: 'Agile Project Manager', cidade: 'Canada', dataDeNascimento: '11/12/1987', celular: 48988888888, funcao: 'asdasdasd'},
+  {id: 94, nomeCompleto: 'Ryan Walker', email: 'Application Support Engineer', cidade: 'USA', dataDeNascimento: '03/11/1992', celular: 48988888888, funcao: 'asdasdasd'},
+  {id: 95, nomeCompleto: 'John Scott', email: 'Flex Developer', cidade: 'England', dataDeNascimento: '05/09/1960', celular: 48988888888, funcao: 'asdasdasd'},
+  {id: 96, nomeCompleto: 'James Phillips', email: 'Senior C++/C# Developer', cidade: 'USA', dataDeNascimento: '05/25/1976', celular: 48988888888, funcao: 'asdasdasd'},
+  {id: 97, nomeCompleto: 'Brian Edwards', email: 'UNIX/C++ Developer', cidade: 'USA', dataDeNascimento: '03/17/1967', celular: 48988888888, funcao: 'asdasdasd'},
+  {id: 98, nomeCompleto: 'Jack Richardson', email: 'Ruby Developer', cidade: 'USA', dataDeNascimento: '02/20/1990', celular: 48988888888, funcao: 'asdasdasd'},
+  {id: 99, nomeCompleto: 'Alex Howard', email: 'CSS3/HTML5 Developer', cidade: 'Canada', dataDeNascimento: '09/24/1991', celular: 48988888888, funcao: 'asdasdasd'},
+  {id: 100, nomeCompleto: 'Carlos Wood', email: 'Node.js Developer', cidade: 'USA', dataDeNascimento: '02/10/1952', celular: 48988888888, funcao: 'asdasdasd'},
+  {id: 101, nomeCompleto: 'Adrian Russell', email: 'Frontend Developer', cidade: 'USA', dataDeNascimento: '09/01/1962', celular: 48988888888, funcao: 'asdasdasd'},
+  {id: 102, nomeCompleto: 'Jeremy Hamilton', email: 'Scala Developer', cidade: 'England', dataDeNascimento: '09/17/1961', celular: 48988888888, funcao: 'asdasdasd'},
+  {id: 103, nomeCompleto: 'Ivan Woods', email: 'Objective C Developer', cidade: 'Canada', dataDeNascimento: '11/08/1967', celular: 48988888888, funcao: 'asdasdasd'},
+  {id: 104, nomeCompleto: 'Peter West', email: 'PHP/HTML Developer', cidade: 'Canada', dataDeNascimento: '08/20/1956', celular: 48988888888, funcao: 'asdasdasd'},
+  {id: 105, nomeCompleto: 'Scott Simpson', email: 'Designer', cidade: 'USA', dataDeNascimento: '01/15/1994', celular: 48988888888, funcao: 'asdasdasd'},
+  {id: 106, nomeCompleto: 'Lorenzo Tucker', email: 'Architect', cidade: 'Germany', dataDeNascimento: '06/01/1993', celular: 48988888888, funcao: 'asdasdasd'},
+  {id: 107, nomeCompleto: 'Randy Grant', email: 'Engineer', cidade: 'England', dataDeNascimento: '07/21/1966', celular: 48988888888, funcao: 'asdasdasd'},
+  {id: 108, nomeCompleto: 'Arthur Gardner', email: 'Analytic', cidade: 'USA', dataDeNascimento: '03/24/1989', celular: 48988888888, funcao: 'asdasdasd'}
+];
+
+document.addEventListener("DOMContentLoaded", function() {
+  new FancyGrid({
+    theme: 'material',
+    renderTo: 'staff',  
+    data: data,
+    selModel: 'row',
+    trackOver: true,  
+    i18n: 'pt-BR',
+    exporter: true,
+    defaults: {
+      type: 'string',
+      sortable: true,
+      resizable: true,    
+      editable: true,
+      flex: 1,
+	    draggable: true,
+      vtype: 'notempty',
+	    menu: true,
+      filter: {
+        header: true
+      }
+    },contextmenu: [
+      'copy',
+      'copy+',
+      '-',
+      'duplicate',
+      '-',
+      'delete',
+      '-',
+      'export',
+      {
+        text: 'Custom',
+        imageCls: 'custom-menu-item-cls',
+        sideText: 'CUSTOM',
+        handler: function() {
+          alert('Click on custom item');
+        }
+      }
+    ],
+    events: [{
+      cellclick: function(grid, o){
+        form.set(o.data);
+      }
+    }],
+    columns: [{
+      index: 'id',
+      title: 'Id',
+      editable: false,
+      type: 'number',
+      flex: 0,
+      width: 50,
+      filter: {
+        header: true,
+        tip: [
+          'Contains: 30<br>',
+          'Less than: <30<br>',
+          'More than: >30<br>',
+          'Equal: 30<br>',
+          'Not Equal: !=30<br>',
+          'Composite: <30,>5'
+        ].join("")
+      }
+    },{
+      index: 'nomeCompleto',
+      title: 'Nome Completo',
+      ellipsis: true,
+      filter: {
+        header: true,
+        tip: [
+          'Contains: Ted<br>',
+          'Equal: =Ted Smith<br>',
+          'Not Equal: !=Ted Smith<br>'
+        ].join("")
+      }
+      },{
+      index: 'dataDeNascimento',
+      title: 'Data de Nascimento',
+      type: 'date',
+      flex: 0,
+      width: 150
+    },{
+      index: 'email',
+      title: 'Email',
+      ellipsis: true,
+      filter: {
+        header: true,
+        tip: [
+          'Contains: Java<br>',
+          'Equal: =Project Manager<br>',
+        ].join("")
+      },
+    },{
+      index: 'cidade',
+      title: 'Cidade',
+      type: 'combo',
+    multiSelect: true,
+    itemCheckBox: true,
+      data: ['USA','England', 'Canada', 'Germany']
+    },{
+      title: 'Celular',
+      name: 'celular',
+      index: 'celular',
+      type: 'string',
+      format: {
+        inputFn: (v) => v.toString().replace(/\D/g,"").replace(/^(\d{2})(\d)/g,'($1) $2 ').replace(/(\d)(\d{4})$/,'$1-$2')
+      }
+    }]
+  });
+     
+  var form = new FancyForm({
+    theme: 'material',
+    renderTo: 'edit-form',
+    title: 'User Data',
+    height: 500,
+    defaults: {
+      type: 'string'
+    },
+    items: [{
+      name: 'id',
+      type: 'hidden'
+    },{
+      label: 'Name',
+      emptyText: 'Name',
+      name: 'name'
+    },{
+      label: 'SurName',
+      emptyText: 'SurName',
+      name: 'surname'
+    },{
+      label: 'E-mail',
+      emptyText: 'E-mail',
+      name: 'email',
+      valid: {
+        type: 'email',
+        blank: false,
+        blankText: 'Required',
+        text: 'Incorect email'
+      }
+    },{
+      type: 'date',
+      label: 'Birthday',
+      name: 'birthday'
+    },{
+      type: 'checkbox',
+      label: 'Active',
+      name: 'active',
+      value: true
+    },{
+      type: 'number',
+      label: 'Hour rate',
+      name: 'hour',
+      min: 0
+    },{
+      type: 'string',
+      label: 'Position',
+      name: 'position'
+    },{
+      type: 'combo',
+      label: 'Country',
+      name: 'country',
+      data: {
+        proxy: {
+          url: 'https://fancygrid.com/json-data/theme/countries.json'
+        }
+      },
+      displayKey: 'text',
+      valueKey: 'text'
+    },{
+      type: 'textarea',
+      label: 'About',
+      name: 'about'
+    }],
+    buttons: ['side', {
+      text: 'Clear',
+      handler: function(){
+        form.clear();
+      }
+    },{
+      text: 'Save',
+      handler: function(){
+        var values = form.get(),
+          grid = FancyGrid.get('staff');
+        
+        if(!values.id){
+          return;
+        }
+        
+        grid.setById(values.id ,values);
+        grid.update();
+      }
+    }]
+  });
+  
+new FancyGrid({
+  theme: 'material',
+  renderTo: 'grid',
+  data: data,
+  selModel: 'row',
+  trackOver: true,
+  i18n: 'pt-BR',
+  exporter: true,
+  contextmenu: [
+      'copy',
+      'copy+',
+      '-',
+      'duplicate',
+      '-',
+      'delete',
+      '-',
+      'export',
+      {
+        text: 'Custom',
+        imageCls: 'custom-menu-item-cls',
+        sideText: 'CUSTOM',
+        handler: function() {
+          alert('Click on custom item');
+        }
+      }
+    ],
+  defaults: {
+    type: 'string',
+    flex: 1,
+    sortable: true,
+    resizable: true,    
+    editable: true,
+    filter: {
+      header: true
+    }
+  },
+  clicksToEdit: 2,
+  columns: [{
+    index: 'id',
+    title: 'Id',
+	  editable: false,
+    type: 'number',
+    filter: {
+      header: true,
+      tip: [
+        'Contains: 30<br>',
+        'Less than: <30<br>',
+        'More than: >30<br>',
+        'Equal: 30<br>',
+        'Not Equal: !=30<br>',
+        'Composite: <30,>5'
+      ].join("")
+    }
+  },{
+    index: 'nomeCompleto',
+    title: 'Nome Completo',
+    ellipsis: true,
+    filter: {
+      header: true,
+      tip: [
+        'Contains: Ted<br>',
+        'Equal: =Ted Smith<br>',
+        'Not Equal: !=Ted Smith<br>'
+      ].join("")
+    }
+  },{
+    index: 'dataDeNascimento',
+    title: 'Data de Nascimento',
+    type: 'date',
+    i18n: 'pt-BR',
+  },{
+    index: 'email',
+    title: 'Email',
+    ellipsis: true,
+    filter: {
+      header: true,
+      tip: [
+        'Contains: Java<br>',
+        'Equal: =Project Manager<br>',
+      ].join("")
+    },
+  },{
+    index: 'cidade',
+    title: 'Cidade',
+    type: 'combo',
+	multiSelect: true,
+	itemCheckBox: true,
+    data: ['USA','England', 'Canada', 'Germany']
+  },{
+    title: 'Celular',
+    name: 'celular',
+    index: 'celular',
+    type: 'number',
+    format: {
+      inputFn: (v) => v.toString().replace(/\D/g,"").replace(/^(\d{2})(\d)/g,'($1) $2').replace(/(\d)(\d{4})$/,'$1-$2')
+    }
+  }]
+});
+
+});
+          </script>
+      <script>
+        const path = require('path');
+        const BrowserWindow = require('electron').remote.BrowserWindow;
+        document.getElementById('btn-cadastro').addEventListener('click', function(event) {  
+          // ipcRenderer.send('setPagina', 'index.html');      
+          const modalPath = path.join('file://',__dirname,'cadastro.html');
+          let win = new BrowserWindow({frame: false, width: 1200, height: 700})
+          win.on('close',function(){win=null});
+          win.loadURL(modalPath);
+          win.show();
+        });
+      </script>
+  </body>
+</html>

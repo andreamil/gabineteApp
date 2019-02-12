@@ -32,7 +32,7 @@
                 </button>
               </div>
   
-            <button class="btn btn-large btn-default btn-dropdown pull-right js-popover-trigger">
+            <button class="btn btn-large btn-default pull-right" id="btn-atualizar">
               <span class="icon icon-megaphone"></span>
             </button>
           </div>
@@ -477,7 +477,7 @@ new FancyGrid({
     title: 'Celular',
     name: 'celular',
     index: 'celular',
-    type: 'number',
+    type: 'string',
     format: {
       inputFn: (v) => v.toString().replace(/\D/g,"").replace(/^(\d{2})(\d)/g,'($1) $2').replace(/(\d)(\d{4})$/,'$1-$2')
     }
@@ -487,6 +487,7 @@ new FancyGrid({
 });
           </script>
       <script>
+        const { autoUpdater } = require("electron-updater")
         const path = require('path');
         const BrowserWindow = require('electron').remote.BrowserWindow;
         document.getElementById('btn-cadastro').addEventListener('click', function(event) {  
@@ -496,6 +497,9 @@ new FancyGrid({
           win.on('close',function(){win=null});
           win.loadURL(modalPath);
           win.show();
+        });
+        document.getElementById('btn-atualizar').addEventListener('click', function(event) {  
+          autoUpdater.checkForUpdatesAndNotify()
         });
       </script>
   </body>

@@ -82,7 +82,7 @@
       <script>
         var sqlite3 = require('sqlite3').verbose();
         const IMask = require('imask');
-        var db = new sqlite3.Database('./individuos.db', (err) => {
+        var db = new sqlite3.Database(__dirname+'/individuos.db', (err) => {
           if (err) {
             console.error(err.message);
           }
@@ -675,9 +675,6 @@ const { shell } = require('electron');
               db.run("INSERT OR REPLACE INTO individuos ("+fields+") VALUES ("+values+");");
             });
             
-          }).then(()=>{
-            const {getCurrentWindow} = require('electron').remote;
-
           })
         saveButton.style.display='none';
         });

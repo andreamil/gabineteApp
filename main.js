@@ -25,19 +25,24 @@ function createWindow () {
   // Criar uma janela de navegação.
   
   win = new BrowserWindow({ width: 1300, height: 700,webPreferences: {
-    zoomFactor: 2.0,
-     plugins: true 
+    zoomFactor:1.3,
+    plugins: true 
   }})
 
   // e carrega index.html do app.
   win.loadFile('index.html')
-
+  win.openDevTools()
+  //win.webContents.zoomFactor(2.0).
+  
   // Emitido quando a janela é fechada.
   win.on('closed', () => {
     // Elimina a referência do objeto da janela, geralmente você iria armazenar as janelas
     // em um array, se seu app suporta várias janelas, este é o momento
     // quando você deve excluir o elemento correspondente.
     win = null
+  })
+  win.on('reload', () => {
+    
   })
 
 }

@@ -3,7 +3,7 @@
   "version": "0.2.1",
   "main": "main.js",
   "scripts": {
-    "postinstall": "install-app-deps",
+    "postinstall": "electron-builder install-app-deps",
     "start": "electron .",
     "pack": "build --dir",
     "dist": "build",
@@ -15,13 +15,17 @@
       "target": "NSIS",
       "icon": "build/icon.ico",
       "publish": "github"
-    }
+    },
+    "buildDependenciesFromSource": true,
+    "nodeVersion": 69,
+    "asar": false
   },
   "author": "Andre",
   "license": "ISC",
   "devDependencies": {
     "electron": "^4.0.5",
     "electron-builder": "^20.38.5",
+    "electron-builder-squirrel-windows": "^20.38.5",
     "electron-rebuild": "^1.8.4",
     "electron-reload": "^1.4.0"
   },
@@ -34,5 +38,14 @@
     "printer": "^0.2.2",
     "request": "^2.88.0",
     "sqlite3": "^4.0.6"
-  }
+  },
+  "description": "App para cadastro de pessoas para gabinetes",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/andreamil/gabineteApp.git"
+  },
+  "bugs": {
+    "url": "https://github.com/andreamil/gabineteApp/issues"
+  },
+  "homepage": "https://github.com/andreamil/gabineteApp#readme"
 }

@@ -1,6 +1,6 @@
 {
   "name": "gabineteapp",
-  "version": "0.1.1",
+  "version": "0.2.1",
   "main": "main.js",
   "scripts": {
     "postinstall": "install-app-deps",
@@ -20,11 +20,19 @@
   "author": "Andre",
   "license": "ISC",
   "devDependencies": {
-    "electron": "^4.0.4",
-    "electron-builder": "^20.38.5"
+    "electron": "^4.0.5",
+    "electron-builder": "^20.38.5",
+    "electron-rebuild": "^1.8.4",
+    "electron-reload": "^1.4.0"
   },
   "dependencies": {
-    "electron-reload": "^1.4.0",
-    "jquery": "^3.3.1"
+    "electron-log": "^3.0.1",
+    "electron-updater": "^4.0.6",
+    "form-data": "^2.3.3",
+    "imask": "^4.1.5",
+    "jquery": "^3.3.1",
+    "printer": "^0.2.2",
+    "request": "^2.88.0",
+    "sqlite3": "^4.0.6"
   }
 }

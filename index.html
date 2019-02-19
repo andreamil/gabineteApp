@@ -4,11 +4,15 @@
     <meta charset="UTF-8">
     <title>Olá Mundo!</title>
 
-    <link rel="stylesheet" href="./photon-0.1.2-dist/css/photon.min.css">
+    <link rel="stylesheet" href="./photon-0.1.2-dist/css/photon.min.css">    
+    <script>
+      const ipcRenderer = require('electron').ipcRenderer;
+      window.$ = require('jquery');
+      </script>
     <link href="fancygrid/fancy.min.css" rel="stylesheet">
     <script src="fancygrid/fancy.full.formated.min.js"></script>         
     <script>
-      const ipcRenderer = require('electron').ipcRenderer;
+      Fancy.MODULESDIR = 'fancygrid/modules/';
     </script>
   </head>
   <body>
@@ -17,20 +21,17 @@
           
           <div class="toolbar-actions" >
   
-            <div class="btn-group">
-              <button class="btn btn-large btn-default">
-                <span class="icon icon-list" style="width: auto;height: auto;font-size: 16px;"></span>
+            <div class="btn-group" id="groupHome">
+              <button class="btn btn-large btn-default active" id="btn-clearfilter">
+                <span class="icon icon-home" style="width: auto;height: auto;font-size: 16px;"></span>
               </button>
-              <button class="btn btn-large btn-default" id="btn-cadastro">
-                <span class="icon icon-user-add" style="width: auto;height: auto;font-size: 16px;"></span>
+              <button class="btn btn-large btn-default" id="btn-geraretiqueta" style="display: none;">
+                <span class="icon icon-print"style="width: auto;height: auto;font-size: 16px;"></span>
+              </button>
+              <button class="btn btn-large btn-default" id="btn-salvar" style="display: none;">
+                <span class="icon icon-floppy"style="width: auto;height: auto;font-size: 16px;"></span>
               </button>
             </div>
-  
-            <div class="btn-group">
-                <button class="btn btn-large btn-default">
-                  <span class="icon icon-calendar"style="width: auto;height: auto;font-size: 16px;"></span>
-                </button>
-              </div>
   
             <button class="btn btn-large btn-default pull-right" id="btn-atualizar">
               <span class="icon icon-megaphone"></span>
@@ -43,18 +44,7 @@
             <div class="pane pane-sm sidebar">
                 <nav class="nav-group" id="nav-cidades">
                   <h5 class="nav-group-title">Cidades</h5>
-                  <span class="nav-group-item">
-                    <span class="icon icon-network"></span>
-                    Araranguá
-                  </span>
-                  <span class="nav-group-item">
-                    <span class="icon icon-network"></span>
-                    Criciúma
-                  </span>
-                  <span class="nav-group-item">
-                    <span class="icon icon-network"></span>
-                    Tubarão
-                  </span>
+                  
                 </nav>
                 <nav class="nav-group" id="nav-cidades">
                   <h5 class="nav-group-title">Aniversariantes</h5>
@@ -73,434 +63,652 @@
                 </nav>
             </div>
             <div class="pane">
-                <div id="staff" style=""></div>
-                <div id="edit-form" style=""></div>
-                <div id="grid" style=""></div>
+                <div class="btn-group" style="position: fixed;top: 0;z-index: 99;margin-top: 4px;margin-bottom: 3px;padding-right: 3px;padding-left: 3px;padding-bottom: 3px;" id="groupTbar">
+                    <button class="btn btn-large btn-default" id="btn-cadastro">
+                      <span class="icon icon-user-add" style="width: auto;height: auto;font-size: 16px;"></span>
+                    </button>
+                    <button class="btn btn-large btn-default" id="btn-remover" style="display: none;">
+                      <span class="icon icon-minus-circled" style="width: auto;height: auto;font-size: 16px;"></span>
+                    </button>
+                    <button class="btn btn-large btn-default" id="btn-editar" style="display: none;">
+                      <span class="icon icon-doc-text" style="width: auto;height: auto;font-size: 16px;"></span>
+                    </button>
+                  </div>
+                <div id="staff"></div>
             </div>
           </div>
         </div>
       </div>
       <script>
-         var data = [
-  {id: 1, nomeCompleto: 'Ted Smith', email: 'Java Developer', dataDeNascimento: '06/22/1953', cidade: 'USA', celular: 48988888888, funcao: 'asdasdasd'},
-  {id: 2, nomeCompleto: 'Ed Johnson', email: 'C/C++ Market Data Developer', dataDeNascimento: '09/12/1971', cidade: 'England', celular: 48988888888, funcao: 'asdasdasd'},
-  {id: 3, nomeCompleto: 'Sam Williams', email: 'Technical Analyst', dataDeNascimento: '09/02/1973', cidade: 'USA', celular: 48988888888, funcao: 'asdasdasd'},
-  {id: 4, nomeCompleto: 'Alexander Brown', email: 'Project Manager', cidade: 'USA', dataDeNascimento: '09/25/1991', celular: 48988888888, funcao: 'asdasdasd'},
-  {id: 5, nomeCompleto: 'Nicholas Miller', email: 'Senior Software Engineer', cidade: 'Canada', dataDeNascimento: '08/24/1959', celular: 48988888888, funcao: 'asdasdasd'},
-  {id: 6, nomeCompleto: 'Andrew Thompson', email: 'Agile Project Manager', cidade: 'Germany', dataDeNascimento: '08/18/1978', celular: 48988888888, funcao: 'asdasdasd'},
-  {id: 7, nomeCompleto: 'Ryan Walker', email: 'Application Support Engineer', cidade: 'England', dataDeNascimento: '04/02/1981', celular: 48988888888, funcao: 'asdasdasd'},
-  {id: 8, nomeCompleto: 'John Scott', email: 'Flex Developer', cidade: 'USA', dataDeNascimento: '02/14/1960', celular: 48988888888, funcao: 'asdasdasd'},
-  {id: 9, nomeCompleto: 'James Phillips', email: 'Senior C++/C# Developer', cidade: 'USA', dataDeNascimento: '10/18/1991', celular: 48988888888, funcao: 'asdasdasd'},
-  {id: 10, nomeCompleto: 'Brian Edwards', email: 'UNIX/C++ Developer', cidade: 'USA', dataDeNascimento: '04/16/1963', celular: 48988888888, funcao: 'asdasdasd'},
-  {id: 11, nomeCompleto: 'Jack Richardson', email: 'Ruby Developer', cidade: 'Germany', dataDeNascimento: '11/20/1982', celular: 48988888888, funcao: 'asdasdasd'},
-  {id: 12, nomeCompleto: 'Alex Howard', email: 'CSS3/HTML5 Developer', cidade: 'USA', dataDeNascimento: '07/22/1987', celular: 48988888888, funcao: 'asdasdasd'},
-  {id: 13, nomeCompleto: 'Carlos Wood', email: 'Node.js Developer', cidade: 'USA', dataDeNascimento: '08/08/1988', celular: 48988888888, funcao: 'asdasdasd'},
-  {id: 14, nomeCompleto: 'Adrian Russell', email: 'Frontend Developer', cidade: 'Canada', dataDeNascimento: '06/19/1969', celular: 48988888888, funcao: 'asdasdasd'},
-  {id: 15, nomeCompleto: 'Jeremy Hamilton', email: 'Scala Developer', cidade: 'USA', dataDeNascimento: '04/17/1950', celular: 48988888888, funcao: 'asdasdasd'},
-  {id: 16, nomeCompleto: 'Ivan Woods', email: 'Objective C Developer', cidade: 'USA', dataDeNascimento: '03/25/1964', celular: 48988888888, funcao: 'asdasdasd'},
-  {id: 17, nomeCompleto: 'Peter West', email: 'PHP/HTML Developer', cidade: 'England', dataDeNascimento: '09/06/1977', celular: 48988888888, funcao: 'asdasdasd'},
-  {id: 18, nomeCompleto: 'Lorenzo Tucker', email: 'Architect', cidade: 'USA', dataDeNascimento: '10/25/1975', celular: 48988888888, funcao: 'asdasdasd'},
-  {id: 19, nomeCompleto: 'Randy Grant', email: 'Engineer', cidade: 'USA', dataDeNascimento: '07/16/1969', celular: 48988888888, funcao: 'asdasdasd'},
-  {id: 20, nomeCompleto: 'Arthur Gardner', email: 'Analytic', cidade: 'USA', dataDeNascimento: '09/26/1994', celular: 48988888888, funcao: 'asdasdasd'},
-  {id: 21, nomeCompleto: 'Orlando Ruiz', email: 'Unit Testing Developer', cidade: 'Germany', dataDeNascimento: '11/02/1985', celular: 48988888888, funcao: 'asdasdasd'},
-  {id: 22, nomeCompleto: 'Ted Smith', email: 'Java Developer', cidade: 'Canada', dataDeNascimento: '03/20/1976', celular: 48988888888, funcao: 'asdasdasd'},
-  {id: 23, nomeCompleto: 'Ed Johnson', email: 'C/C++ Market Data Developer', cidade: 'USA', dataDeNascimento: '06/07/1985', celular: 48988888888, funcao: 'asdasdasd'},
-  {id: 24, nomeCompleto: 'Sam Williams', email: 'Technical Analyst', cidade: 'USA', dataDeNascimento: '06/23/1981', celular: 48988888888, funcao: 'asdasdasd'},
-  {id: 25, nomeCompleto: 'Alexander Brown', email: 'Project Manager', cidade: 'England', dataDeNascimento: '03/12/1989', celular: 48988888888, funcao: 'asdasdasd'},
-  {id: 26, nomeCompleto: 'Nicholas Miller', email: 'Senior Software Engineer', cidade: 'England', dataDeNascimento: '08/03/1967', celular: 48988888888, funcao: 'asdasdasd'},
-  {id: 27, nomeCompleto: 'Andrew Thompson', email: 'Agile Project Manager', cidade: 'USA', dataDeNascimento: '11/17/1993', celular: 48988888888, funcao: 'asdasdasd'},
-  {id: 28, nomeCompleto: 'Ryan Walker', email: 'Application Support Engineer', cidade: 'USA', dataDeNascimento: '01/27/1963', celular: 48988888888, funcao: 'asdasdasd'},
-  {id: 29, nomeCompleto: 'John Scott', email: 'Flex Developer', cidade: 'USA', dataDeNascimento: '01/06/1983', celular: 48988888888, funcao: 'asdasdasd'},
-  {id: 30, nomeCompleto: 'James Phillips', email: 'Senior C++/C# Developer', cidade: 'Germany', dataDeNascimento: '01/06/1972', celular: 48988888888, funcao: 'asdasdasd'},
-  {id: 31, nomeCompleto: 'Brian Edwards', email: 'UNIX/C++ Developer', cidade: 'Canada', dataDeNascimento: '10/07/1954', celular: 48988888888, funcao: 'asdasdasd'},
-  {id: 32, nomeCompleto: 'Jack Richardson', email: 'Ruby Developer', cidade: 'USA', dataDeNascimento: '01/03/1987', celular: 48988888888, funcao: 'asdasdasd'},
-  {id: 33, nomeCompleto: 'Alex Howard', email: 'CSS3/HTML5 Developer', cidade: 'USA', dataDeNascimento: '01/27/1984', celular: 48988888888, funcao: 'asdasdasd'},
-  {id: 34, nomeCompleto: 'Carlos Wood', email: 'Node.js Developer', cidade: 'England', dataDeNascimento: '03/08/1966', celular: 48988888888, funcao: 'asdasdasd'},
-  {id: 35, nomeCompleto: 'Adrian Russell', email: 'Frontend Developer', cidade: 'USA', dataDeNascimento: '01/26/1970', celular: 48988888888, funcao: 'asdasdasd'},
-  {id: 36, nomeCompleto: 'Jeremy Hamilton', email: 'Scala Developer', cidade: 'USA', dataDeNascimento: '01/18/1981', celular: 48988888888, funcao: 'asdasdasd'},
-  {id: 37, nomeCompleto: 'Ivan Woods', email: 'Objective C Developer', cidade: 'Canada', dataDeNascimento: '03/27/1982', celular: 48988888888, funcao: 'asdasdasd'},
-  {id: 38, nomeCompleto: 'Peter West', email: 'PHP/HTML Developer', cidade: 'Germany', dataDeNascimento: '01/17/1986', celular: 48988888888, funcao: 'asdasdasd'},
-  {id: 39, nomeCompleto: 'Scott Simpson', email: 'Designer', cidade: 'USA', dataDeNascimento: '09/13/1969', celular: 48988888888, funcao: 'asdasdasd'},
-  {id: 40, nomeCompleto: 'Lorenzo Tucker', email: 'Architect', cidade: 'USA', dataDeNascimento: '05/04/1959', celular: 48988888888, funcao: 'asdasdasd'},
-  {id: 41, nomeCompleto: 'Randy Grant', email: 'Engineer', cidade: 'USA', dataDeNascimento: '07/01/1976', celular: 48988888888, funcao: 'asdasdasd'},
-  {id: 42, nomeCompleto: 'Arthur Gardner', email: 'Analytic', cidade: 'England', dataDeNascimento: '10/19/1970', celular: 48988888888, funcao: 'asdasdasd'},
-  {id: 43, nomeCompleto: 'Orlando Ruiz', email: 'Unit Testing Developer', cidade: 'USA', dataDeNascimento: '05/17/1992', celular: 48988888888, funcao: 'asdasdasd'},
-  {id: 44, nomeCompleto: 'Ted Smith', email: 'Java Developer', cidade: 'USA', dataDeNascimento: '08/19/1982', celular: 48988888888, funcao: 'asdasdasd'},
-  {id: 45, nomeCompleto: 'Ed Johnson', email: 'C/C++ Market Data Developer', cidade: 'Canada', dataDeNascimento: '04/12/1970', celular: 48988888888, funcao: 'asdasdasd'},
-  {id: 46, nomeCompleto: 'Sam Williams', email: 'Technical Analyst', cidade: 'Germany', dataDeNascimento: '04/23/1981', celular: 48988888888, funcao: 'asdasdasd'},
-  {id: 47, nomeCompleto: 'Alexander Brown', email: 'Project Manager', cidade: 'USA', dataDeNascimento: '09/10/1970', celular: 48988888888, funcao: 'asdasdasd'},
-  {id: 48, nomeCompleto: 'Nicholas Miller', email: 'Senior Software Engineer', cidade: 'USA', dataDeNascimento: '03/26/1964', celular: 48988888888, funcao: 'asdasdasd'},
-  {id: 49, nomeCompleto: 'Andrew Thompson', email: 'Agile Project Manager', cidade: 'USA', dataDeNascimento: '02/18/1984', celular: 48988888888, funcao: 'asdasdasd'},
-  {id: 50, nomeCompleto: 'Ryan Walker', email: 'Application Support Engineer', cidade: 'England', dataDeNascimento: '01/14/1989', celular: 48988888888, funcao: 'asdasdasd'},
-  {id: 51, nomeCompleto: 'John Scott', email: 'Flex Developer', cidade: 'USA', dataDeNascimento: '02/13/1985', celular: 48988888888, funcao: 'asdasdasd'},
-  {id: 52, nomeCompleto: 'James Phillips', email: 'Senior C++/C# Developer', cidade: 'Canada', dataDeNascimento: '06/22/1978', celular: 48988888888, funcao: 'asdasdasd'},
-  {id: 53, nomeCompleto: 'Brian Edwards', email: 'UNIX/C++ Developer', cidade: 'USA', dataDeNascimento: '03/19/1991', celular: 48988888888, funcao: 'asdasdasd'},
-  {id: 54, nomeCompleto: 'Jack Richardson', email: 'Ruby Developer', cidade: 'USA', dataDeNascimento: '09/01/1966', celular: 48988888888, funcao: 'asdasdasd'},
-  {id: 55, nomeCompleto: 'Alex Howard', email: 'CSS3/HTML5 Developer', cidade: 'USA', dataDeNascimento: '06/19/1993', celular: 48988888888, funcao: 'asdasdasd'},
-  {id: 56, nomeCompleto: 'Carlos Wood', email: 'Node.js Developer', cidade: 'Germany', dataDeNascimento: '05/18/1963', celular: 48988888888, funcao: 'asdasdasd'},
-  {id: 57, nomeCompleto: 'Adrian Russell', email: 'Frontend Developer', cidade: 'England', dataDeNascimento: '01/15/1957', celular: 48988888888, funcao: 'asdasdasd'},
-  {id: 58, nomeCompleto: 'Jeremy Hamilton', email: 'Scala Developer', cidade: 'USA', dataDeNascimento: '11/15/1975', celular: 48988888888, funcao: 'asdasdasd'},
-  {id: 59, nomeCompleto: 'Ivan Woods', email: 'Objective C Developer', cidade: 'USA', dataDeNascimento: '11/01/1974', celular: 48988888888, funcao: 'asdasdasd'},
-  {id: 60, nomeCompleto: 'Peter West', email: 'PHP/HTML Developer', cidade: 'USA', dataDeNascimento: '04/12/1954', celular: 48988888888, funcao: 'asdasdasd'},
-  {id: 61, nomeCompleto: 'Scott Simpson', email: 'Designer', cidade: 'USA', dataDeNascimento: '05/05/1978', celular: 48988888888, funcao: 'asdasdasd'},
-  {id: 62, nomeCompleto: 'Lorenzo Tucker', email: 'Architect', cidade: 'Canada', dataDeNascimento: '10/17/1990', celular: 48988888888, funcao: 'asdasdasd'},
-  {id: 63, nomeCompleto: 'Randy Grant', email: 'Engineer', cidade: 'USA', dataDeNascimento: '05/01/1973', celular: 48988888888, funcao: 'asdasdasd'},
-  {id: 64, nomeCompleto: 'Arthur Gardner', email: 'Analytic', cidade: 'USA', dataDeNascimento: '06/20/1961', celular: 48988888888, funcao: 'asdasdasd'},
-  {id: 65, nomeCompleto: 'Orlando Ruiz', email: 'Unit Testing Developer', cidade: 'USA', dataDeNascimento: '09/10/1956', celular: 48988888888, funcao: 'asdasdasd'},
-  {id: 66, nomeCompleto: 'Ted Smith', email: 'Java Developer', cidade: 'Germany', dataDeNascimento: '03/22/1959', celular: 48988888888, funcao: 'asdasdasd'},
-  {id: 67, nomeCompleto: 'Ed Johnson', email: 'C/C++ Market Data Developer', cidade: 'USA', dataDeNascimento: '07/15/1958', celular: 48988888888, funcao: 'asdasdasd'},
-  {id: 68, nomeCompleto: 'Sam Williams', email: 'Technical Analyst', cidade: 'England', dataDeNascimento: '01/12/1988', celular: 48988888888, funcao: 'asdasdasd'},
-  {id: 69, nomeCompleto: 'Alexander Brown', email: 'Project Manager', cidade: 'Canada', dataDeNascimento: '09/23/1982', celular: 48988888888, funcao: 'asdasdasd'},
-  {id: 70, nomeCompleto: 'Nicholas Miller', email: 'Senior Software Engineer', cidade: 'USA', dataDeNascimento: '05/02/1957', celular: 48988888888, funcao: 'asdasdasd'},
-  {id: 71, nomeCompleto: 'Andrew Thompson', email: 'Agile Project Manager', cidade: 'USA', dataDeNascimento: '05/08/1954', celular: 48988888888, funcao: 'asdasdasd'},
-  {id: 72, nomeCompleto: 'Ryan Walker', email: 'Application Support Engineer', cidade: 'USA', dataDeNascimento: '06/24/1983', celular: 48988888888, funcao: 'asdasdasd'},
-  {id: 73, nomeCompleto: 'John Scott', email: 'Flex Developer', cidade: 'Germany', dataDeNascimento: '07/06/1963', celular: 48988888888, funcao: 'asdasdasd'},
-  {id: 74, nomeCompleto: 'James Phillips', email: 'Senior C++/C# Developer', cidade: 'USA', dataDeNascimento: '01/13/1986', celular: 48988888888, funcao: 'asdasdasd'},
-  {id: 75, nomeCompleto: 'Brian Edwards', email: 'UNIX/C++ Developer', cidade: 'USA', dataDeNascimento: '02/14/1988', celular: 48988888888, funcao: 'asdasdasd'},
-  {id: 76, nomeCompleto: 'Jack Richardson', email: 'Ruby Developer', cidade: 'England', dataDeNascimento: '08/14/1963', celular: 48988888888, funcao: 'asdasdasd'},
-  {id: 77, nomeCompleto: 'Alex Howard', email: 'CSS3/HTML5 Developer', cidade: 'USA', dataDeNascimento: '08/05/1950', celular: 48988888888, funcao: 'asdasdasd'},
-  {id: 78, nomeCompleto: 'Carlos Wood', email: 'Node.js Developer', cidade: 'Canada', dataDeNascimento: '05/02/1973', celular: 48988888888, funcao: 'asdasdasd'},
-  {id: 79, nomeCompleto: 'Adrian Russell', email: 'Frontend Developer', cidade: 'USA', dataDeNascimento: '08/21/1980', celular: 48988888888, funcao: 'asdasdasd'},
-  {id: 80, nomeCompleto: 'Jeremy Hamilton', email: 'Scala Developer', cidade: 'Germany', dataDeNascimento: '11/23/1970', celular: 48988888888, funcao: 'asdasdasd'},
-  {id: 81, nomeCompleto: 'Ivan Woods', email: 'Objective C Developer', cidade: 'USA', dataDeNascimento: '03/15/1971', celular: 48988888888, funcao: 'asdasdasd'},
-  {id: 82, nomeCompleto: 'Peter West', email: 'PHP/HTML Developer', cidade: 'USA', dataDeNascimento: '11/15/1953', celular: 48988888888, funcao: 'asdasdasd'},
-  {id: 83, nomeCompleto: 'Scott Simpson', email: 'Designer', cidade: 'USA', dataDeNascimento: '01/16/1990', celular: 48988888888, funcao: 'asdasdasd'},
-  {id: 84, nomeCompleto: 'Lorenzo Tucker', email: 'Architect', cidade: 'USA', dataDeNascimento: '06/13/1992', celular: 48988888888, funcao: 'asdasdasd'},
-  {id: 85, nomeCompleto: 'Randy Grant', email: 'Engineer', cidade: 'England', dataDeNascimento: '10/15/1986', celular: 48988888888, funcao: 'asdasdasd'},
-  {id: 86, nomeCompleto: 'Arthur Gardner', email: 'Analytic', cidade: 'Germany', dataDeNascimento: '08/10/1969', celular: 48988888888, funcao: 'asdasdasd'},
-  {id: 87, nomeCompleto: 'Orlando Ruiz', email: 'Unit Testing Developer', cidade: 'Canada', dataDeNascimento: '04/19/1992', celular: 48988888888, funcao: 'asdasdasd'},
-  {id: 88, nomeCompleto: 'Ted Smith', email: 'Java Developer', cidade: 'USA', dataDeNascimento: '05/16/1981', celular: 48988888888, funcao: 'asdasdasd'},
-  {id: 89, nomeCompleto: 'Ed Johnson', email: 'C/C++ Market Data Developer', cidade: 'USA', dataDeNascimento: '09/07/1954', celular: 48988888888, funcao: 'asdasdasd'},
-  {id: 90, nomeCompleto: 'Sam Williams', email: 'Technical Analyst', cidade: 'USA', dataDeNascimento: '09/06/1968', celular: 48988888888, funcao: 'asdasdasd'},
-  {id: 91, nomeCompleto: 'Alexander Brown', email: 'Project Manager', cidade: 'USA', dataDeNascimento: '03/15/1973', celular: 48988888888, funcao: 'asdasdasd'},
-  {id: 92, nomeCompleto: 'Nicholas Miller', email: 'Senior Software Engineer', cidade: 'Germany', dataDeNascimento: '02/19/1968', celular: 48988888888, funcao: 'asdasdasd'},
-  {id: 93, nomeCompleto: 'Andrew Thompson', email: 'Agile Project Manager', cidade: 'Canada', dataDeNascimento: '11/12/1987', celular: 48988888888, funcao: 'asdasdasd'},
-  {id: 94, nomeCompleto: 'Ryan Walker', email: 'Application Support Engineer', cidade: 'USA', dataDeNascimento: '03/11/1992', celular: 48988888888, funcao: 'asdasdasd'},
-  {id: 95, nomeCompleto: 'John Scott', email: 'Flex Developer', cidade: 'England', dataDeNascimento: '05/09/1960', celular: 48988888888, funcao: 'asdasdasd'},
-  {id: 96, nomeCompleto: 'James Phillips', email: 'Senior C++/C# Developer', cidade: 'USA', dataDeNascimento: '05/25/1976', celular: 48988888888, funcao: 'asdasdasd'},
-  {id: 97, nomeCompleto: 'Brian Edwards', email: 'UNIX/C++ Developer', cidade: 'USA', dataDeNascimento: '03/17/1967', celular: 48988888888, funcao: 'asdasdasd'},
-  {id: 98, nomeCompleto: 'Jack Richardson', email: 'Ruby Developer', cidade: 'USA', dataDeNascimento: '02/20/1990', celular: 48988888888, funcao: 'asdasdasd'},
-  {id: 99, nomeCompleto: 'Alex Howard', email: 'CSS3/HTML5 Developer', cidade: 'Canada', dataDeNascimento: '09/24/1991', celular: 48988888888, funcao: 'asdasdasd'},
-  {id: 100, nomeCompleto: 'Carlos Wood', email: 'Node.js Developer', cidade: 'USA', dataDeNascimento: '02/10/1952', celular: 48988888888, funcao: 'asdasdasd'},
-  {id: 101, nomeCompleto: 'Adrian Russell', email: 'Frontend Developer', cidade: 'USA', dataDeNascimento: '09/01/1962', celular: 48988888888, funcao: 'asdasdasd'},
-  {id: 102, nomeCompleto: 'Jeremy Hamilton', email: 'Scala Developer', cidade: 'England', dataDeNascimento: '09/17/1961', celular: 48988888888, funcao: 'asdasdasd'},
-  {id: 103, nomeCompleto: 'Ivan Woods', email: 'Objective C Developer', cidade: 'Canada', dataDeNascimento: '11/08/1967', celular: 48988888888, funcao: 'asdasdasd'},
-  {id: 104, nomeCompleto: 'Peter West', email: 'PHP/HTML Developer', cidade: 'Canada', dataDeNascimento: '08/20/1956', celular: 48988888888, funcao: 'asdasdasd'},
-  {id: 105, nomeCompleto: 'Scott Simpson', email: 'Designer', cidade: 'USA', dataDeNascimento: '01/15/1994', celular: 48988888888, funcao: 'asdasdasd'},
-  {id: 106, nomeCompleto: 'Lorenzo Tucker', email: 'Architect', cidade: 'Germany', dataDeNascimento: '06/01/1993', celular: 48988888888, funcao: 'asdasdasd'},
-  {id: 107, nomeCompleto: 'Randy Grant', email: 'Engineer', cidade: 'England', dataDeNascimento: '07/21/1966', celular: 48988888888, funcao: 'asdasdasd'},
-  {id: 108, nomeCompleto: 'Arthur Gardner', email: 'Analytic', cidade: 'USA', dataDeNascimento: '03/24/1989', celular: 48988888888, funcao: 'asdasdasd'}
-];
+        var sqlite3 = require('sqlite3').verbose();
+        const IMask = require('imask');
+        var db = new sqlite3.Database('./individuos.db', (err) => {
+          if (err) {
+            console.error(err.message);
+          }
+          console.log('Connected to the chinook database.');
+        });
 
-document.addEventListener("DOMContentLoaded", function() {
-  new FancyGrid({
-    theme: 'material',
-    renderTo: 'staff',  
-    data: data,
-    selModel: 'row',
-    trackOver: true,  
-    i18n: 'pt-BR',
-    exporter: true,
-    defaults: {
-      type: 'string',
-      sortable: true,
-      resizable: true,    
-      editable: true,
-      flex: 1,
-	    draggable: true,
-      vtype: 'notempty',
-	    menu: true,
-      filter: {
-        header: true
-      }
-    },contextmenu: [
-      'copy',
-      'copy+',
-      '-',
-      'duplicate',
-      '-',
-      'delete',
-      '-',
-      'export',
-      {
-        text: 'Custom',
-        imageCls: 'custom-menu-item-cls',
-        sideText: 'CUSTOM',
-        handler: function() {
-          alert('Click on custom item');
-        }
-      }
-    ],
-    events: [{
-      cellclick: function(grid, o){
-        form.set(o.data);
-      }
-    }],
-    columns: [{
-      index: 'id',
-      title: 'Id',
-      editable: false,
-      type: 'number',
-      flex: 0,
-      width: 50,
-      filter: {
-        header: true,
-        tip: [
-          'Contains: 30<br>',
-          'Less than: <30<br>',
-          'More than: >30<br>',
-          'Equal: 30<br>',
-          'Not Equal: !=30<br>',
-          'Composite: <30,>5'
-        ].join("")
-      }
-    },{
-      index: 'nomeCompleto',
-      title: 'Nome Completo',
-      ellipsis: true,
-      filter: {
-        header: true,
-        tip: [
-          'Contains: Ted<br>',
-          'Equal: =Ted Smith<br>',
-          'Not Equal: !=Ted Smith<br>'
-        ].join("")
-      }
-      },{
-      index: 'dataDeNascimento',
-      title: 'Data de Nascimento',
-      type: 'date',
-      flex: 0,
-      width: 150
-    },{
-      index: 'email',
-      title: 'Email',
-      ellipsis: true,
-      filter: {
-        header: true,
-        tip: [
-          'Contains: Java<br>',
-          'Equal: =Project Manager<br>',
-        ].join("")
-      },
-    },{
-      index: 'cidade',
-      title: 'Cidade',
-      type: 'combo',
-    multiSelect: true,
-    itemCheckBox: true,
-      data: ['USA','England', 'Canada', 'Germany']
-    },{
-      title: 'Celular',
-      name: 'celular',
-      index: 'celular',
-      type: 'string',
-      format: {
-        inputFn: (v) => v.toString().replace(/\D/g,"").replace(/^(\d{2})(\d)/g,'($1) $2 ').replace(/(\d)(\d{4})$/,'$1-$2')
-      }
-    }]
-  });
-     
-  var form = new FancyForm({
-    theme: 'material',
-    renderTo: 'edit-form',
-    title: 'User Data',
-    height: 500,
-    defaults: {
-      type: 'string'
-    },
-    items: [{
-      name: 'id',
-      type: 'hidden'
-    },{
-      label: 'Name',
-      emptyText: 'Name',
-      name: 'name'
-    },{
-      label: 'SurName',
-      emptyText: 'SurName',
-      name: 'surname'
-    },{
-      label: 'E-mail',
-      emptyText: 'E-mail',
-      name: 'email',
-      valid: {
-        type: 'email',
-        blank: false,
-        blankText: 'Required',
-        text: 'Incorect email'
-      }
-    },{
-      type: 'date',
-      label: 'Birthday',
-      name: 'birthday'
-    },{
-      type: 'checkbox',
-      label: 'Active',
-      name: 'active',
-      value: true
-    },{
-      type: 'number',
-      label: 'Hour rate',
-      name: 'hour',
-      min: 0
-    },{
-      type: 'string',
-      label: 'Position',
-      name: 'position'
-    },{
-      type: 'combo',
-      label: 'Country',
-      name: 'country',
-      data: {
-        proxy: {
-          url: 'https://fancygrid.com/json-data/theme/countries.json'
+        var dataMask,celularMask,staffEditForm;
+        var saveButton = document.getElementById('btn-salvar'),
+              editButton = document.getElementById('btn-editar'),
+              gerarEtiquetaButton = document.getElementById('btn-geraretiqueta'),
+                removeButton = document.getElementById('btn-remover');
+        
+              Fancy.defineController('staffGridControl', {
+      onSelect: function(grid) {
+        var selection = grid.getSelection();
+        if (selection.length) {
+          gerarEtiquetaButton.style.display = "";
+
+          if (selection.length === 1) {
+            editButton.style.display = "";
+            removeButton.style.display = "";
+          } else {
+            editButton.style.display = "none";
+            removeButton.style.display = "none";
+          }
+        }else{
+          gerarEtiquetaButton.style.display = "none";        
         }
       },
-      displayKey: 'text',
-      valueKey: 'text'
-    },{
-      type: 'textarea',
-      label: 'About',
-      name: 'about'
-    }],
-    buttons: ['side', {
-      text: 'Clear',
-      handler: function(){
-        form.clear();
-      }
-    },{
-      text: 'Save',
-      handler: function(){
-        var values = form.get(),
-          grid = FancyGrid.get('staff');
+      onClearSelect: function(grid) {
+        editButton.style.display = "none";
+        removeButton.style.display = "none";
+      },
+      onRowDBLClick: function(grid, o) {
+        grid.editUser(o.data);
+      },
+      editUser: function(item) {
+        var me = this;
+          staffEditForm = me.staffEditForm;
         
-        if(!values.id){
-          return;
-        }
-        
-        grid.setById(values.id ,values);
-        grid.update();
-      }
-    }]
-  });
-  
-new FancyGrid({
-  theme: 'material',
-  renderTo: 'grid',
-  data: data,
-  selModel: 'row',
-  trackOver: true,
-  i18n: 'pt-BR',
-  exporter: true,
-  contextmenu: [
-      'copy',
-      'copy+',
-      '-',
-      'duplicate',
-      '-',
-      'delete',
-      '-',
-      'export',
-      {
-        text: 'Custom',
-        imageCls: 'custom-menu-item-cls',
-        sideText: 'CUSTOM',
-        handler: function() {
-          alert('Click on custom item');
-        }
-      }
-    ],
-  defaults: {
-    type: 'string',
-    flex: 1,
-    sortable: true,
-    resizable: true,    
-    editable: true,
-    filter: {
-      header: true
-    }
-  },
-  clicksToEdit: 2,
-  columns: [{
-    index: 'id',
-    title: 'Id',
-	  editable: false,
-    type: 'number',
-    filter: {
-      header: true,
-      tip: [
-        'Contains: 30<br>',
-        'Less than: <30<br>',
-        'More than: >30<br>',
-        'Equal: 30<br>',
-        'Not Equal: !=30<br>',
-        'Composite: <30,>5'
-      ].join("")
-    }
-  },{
-    index: 'nomeCompleto',
-    title: 'Nome Completo',
-    ellipsis: true,
-    filter: {
-      header: true,
-      tip: [
-        'Contains: Ted<br>',
-        'Equal: =Ted Smith<br>',
-        'Not Equal: !=Ted Smith<br>'
-      ].join("")
-    }
-  },{
-    index: 'dataDeNascimento',
-    title: 'Data de Nascimento',
-    type: 'date',
-    i18n: 'pt-BR',
-  },{
-    index: 'email',
-    title: 'Email',
-    ellipsis: true,
-    filter: {
-      header: true,
-      tip: [
-        'Contains: Java<br>',
-        'Equal: =Project Manager<br>',
-      ].join("")
-    },
-  },{
-    index: 'cidade',
-    title: 'Cidade',
-    type: 'combo',
-	multiSelect: true,
-	itemCheckBox: true,
-    data: ['USA','England', 'Canada', 'Germany']
-  },{
-    title: 'Celular',
-    name: 'celular',
-    index: 'celular',
-    type: 'string',
-    format: {
-      inputFn: (v) => v.toString().replace(/\D/g,"").replace(/^(\d{2})(\d)/g,'($1) $2').replace(/(\d)(\d{4})$/,'$1-$2')
-    }
-  }]
-});
+        let idSelected=Object.keys(grid.selection.memory.selected)[0]
+      if (staffEditForm) {
+        console.log(idSelected)
+        staffEditForm.clear();
+        staffEditForm.set(grid.store.map[idSelected].data);
+        item.dataDeNascimento==''||item.dataDeNascimento==undefined||item.dataDeNascimento==null
+          ?staffEditForm.set('dataDeNascimento','01/01/1980')
+          :{}
+        staffEditForm.setTitle('Dados da pessoa (id=' + idSelected+')');
 
-});
+        staffEditForm.show();
+      } else {
+        staffEditForm = new FancyForm({
+            theme: 'bootstrap',
+            title: {
+            text: 'Dados da pessoa (id=' +idSelected+')',
+            tools: [{
+              text: 'Fechar',
+              handler: function() {
+                this.hide();
+              }
+            }]
+          },
+          window: true,
+          draggable: true,
+          width: 500,
+          height: 570,
+            i18n: 'pt-BR',
+            defaults: {
+              type: 'string',
+            },
+            items: [{
+              name: 'id',
+              type: 'hidden',
+              value: idSelected
+            }, {
+              type: 'line',
+              defaults: {
+              labelAlign: 'top',},
+              items: [{
+                label: 'Nome Completo',
+                name: 'nomeCompleto',
+              value: item.nomeCompleto
+              },{
+                label: 'Apelido',
+                emptyText: 'Apelido',
+                name: 'apelido',
+              value: item.apelido
+              },]
+            }, {
+                type: 'line',
+                defaults: {
+                labelAlign: 'top',},
+                items: [{
+                label: 'E-mail',
+                emptyText: 'E-mail',
+                name: 'email',
+                valid: {
+                  type: 'email',
+                  blank: false,
+                  blankText: 'Required',
+                  text: 'Incorect email'
+                },
+              value: item.email
+              },{
+                type: 'date',
+                label: 'Data de Nascimento',
+                name: 'dataDeNascimento', 
+                id: 'inputData',
+                value: item.dataDeNascimento==''||item.dataDeNascimento==undefined||item.dataDeNascimento==null
+                        ?'01/01/1980'
+                        :item.dataDeNascimento,
+                format: {
+                  read: 'd/m/Y',
+                  write: 'd/m/Y',
+                  edit: 'd/m/Y'              
+                },     
+              events: [{
+                change: (v) =>{if(dataMask!=undefined||dataMask!=null){dataMask.masked.value = dataMask.el.value;
+                                                                      dataMask._value = dataMask.masked.value;} return v;}
+              },{
+                input: (v) =>{if(dataMask!=undefined||dataMask!=null){dataMask.masked.value = dataMask.el.value;
+                                                                      dataMask._value = dataMask.masked.value;} return v;}
+              }]
+              },]
+            }, {
+                type: 'line',
+                defaults: {
+                labelAlign: 'top',},
+                items: [{
+                type: 'combo',
+                label: 'Cidade',
+                name: 'cidade',
+                value: item.cidade,
+                data: {
+                  proxy: {
+
+                    url: __dirname+'/cidadesSc.json'
+                  }
+                },
+                displayKey: 'text',
+                valueKey: 'text'
+                },{
+                type: 'combo',
+                label: 'Estado',
+                name: 'estado',
+                value: item.estado,
+                data: ["AC", "AL", "AM", "AP", "BA", "CE", "DF", "ES", "GO", "MA", "MT", "MS", "MG", "PA", "PB", "PR", "PE", "PI", "RJ", "RN", "RO", "RS", "RR", "SC", "SE", "SP", "TO"],
+                displayKey: 'text',
+                valueKey: 'text'
+                },{
+                  type: 'string',
+                  label: 'Cep',
+                  name: 'cep',
+                value: item.cep,
+                }]
+              },
+              {
+                type: 'line',
+                defaults: {
+                labelAlign: 'top',},
+                items: [{
+                type: 'string',
+                label: 'Rua',
+                name: 'rua',
+                value: item.rua,
+              },{
+                type: 'string',
+                label: 'Bairro',
+                name: 'bairro',
+                value: item.bairro,
+              },{
+                type: 'string',
+                label: 'Número',
+                name: 'numero',
+                value: item.numero,
+              }]
+            },{
+                type: 'line',
+                defaults: {
+                labelAlign: 'top',},
+                items: [{
+                type: 'string',
+                label: 'Função',
+                name: 'funcao',
+                value: item.funcao?item.funcao:'',
+              },{
+                type: 'string',
+                label: 'Telefone',
+                name: 'telefone',
+                value: item.telefone?item.telefone:'',
+              },{
+                type: 'string',
+                label: 'Celular',
+                name: 'celular',
+                id: 'inputCelular',
+                value: item.celular,
+                emptyText: '(xx) xxxxx-xxxx',
+                format: {
+                  inputFn: (v) =>v.toString().replace(/\D/g,"").replace(/^(\d{2})(\d)/g,'($1) $2').replace(/(\d)(\d{4})$/,'$1-$2')
+                }
+              },]
+            },{
+                type: 'line',
+                defaults: {
+                  labelAlign: 'top'
+                },
+                items: [{
+                  type: 'textarea',
+                  label: 'Observações',
+                  name: 'observacoes',
+                  value: item.observacoes,
+                }]
+            },],
+            events: [{
+              init: function() {
+                //item.$selected= true;
+                this.show();       
+              }
+            }],
+            buttons: [{
+              text: 'Imprimir etiqueta',
+              handler: gerarEtiqueta
+            },'side', {
+              text: 'Fechar',
+              handler: function(){
+                this.hide();
+              }
+            },{
+              text: 'Salvar',
+              handler: function(){
+                me.getById(this.get('id')).set(this.get());
+                saveButton.style.display='';
+                me.update();
+                this.hide();
+              }
+            }],
+
+          });
+
+        me.staffEditForm = staffEditForm;        
+
+      }
+      dataMask= new IMask(Fancy.getWidget('inputData').input.dom, {
+                        mask: Date,  // enable date mask
+
+                          // other options are optional
+                          pattern: 'd/`m/`Y',  // Pattern mask with defined blocks, default is 'd{.}`m{.}`Y'
+                          // you can provide your own blocks definitions, default blocks for date mask are:
+                          blocks: {
+                            d: {
+                              mask: IMask.MaskedRange,
+                              from: 1,
+                              to: 31,
+                              maxLength: 2,
+                            },
+                            m: {
+                              mask: IMask.MaskedRange,
+                              from: 1,
+                              to: 12,
+                              maxLength: 2,
+                            },
+                            Y: {
+                              mask: IMask.MaskedRange,
+                              from: 1900,
+                              to: 2019,
+                            }
+                          },
+                          // define date -> str convertion
+                          format: function (date) {
+                            var day = date.getDate();
+                            var month = date.getMonth() + 1;
+                            var year = date.getFullYear();
+
+                            if (day < 10) day = "0" + day;
+                            if (month < 10) month = "0" + month;
+
+                            return [day, month, year].join('/');
+                          },
+                          // define str -> date convertion
+                          parse: function (str) {
+                            var yearMonthDay = str.split('/');
+                            return new Date(yearMonthDay[2], yearMonthDay[1] - 1, yearMonthDay[0]);
+                          },
+
+                          // optional interval options
+                          min: new Date(1900, 0, 1),  // defaults to 1900-01-01
+                          max: new Date(2020, 0, 1),  // defaults to 9999-01-01
+
+                          // also Pattern options can be set
+                          lazy: false
+                      })
+    }
+  });
+        let selectedId,ultimoId;
+        var cidades=[], grid;
+
+        document.addEventListener("DOMContentLoaded", function() {
+        db.all("SELECT * FROM individuos", [], (err, rows) => {
+              if (err) {
+                throw err;
+              }
+              ultimoId = rows[rows.length-1].id;
+              
+              rows.forEach(function(item) {
+                var index = cidades.findIndex(x => x.nome==item.cidade);
+                index!=-1?cidades[index].count++  
+                         :cidades.push({nome: item.cidade,count: 1});
+              });
+              cidades.sort((a,b) => (a.count > b.count) ? -1 : ((b.count > a.count) ? 1 : 0)); 
+          
+              grid = new FancyGrid({
+                theme: 'bootstrap',
+                renderTo: 'staff',  
+                data: rows,
+                i18n: 'pt-BR',
+                gridBorders: [0,0,0,0],
+                gridWithoutPanelBorders: [0,0,0,0],
+                filter: true,
+                searching: true,
+                /*tbar: [{
+                text: 'Adicionar',
+                handler: function(){
+                  var b=this;
+                  ultimoId++;
+                  b.add({id: ultimoId});
+                  b.scroll();
+                }
+              }, {
+                text: 'Remover',
+                action: 'remove',
+                tip: 'Selecione para remover',
+              }, {
+                text: 'Editar',
+                disabled: true,
+                tip: 'Selecione para editar <br> Ou duplo clique na linha',
+                handler: function() {
+                  var me = this,
+                    selection = me.getSelection(),
+                    item = selection[0];
+
+                  this.editUser(item);
+                }
+              }],*/
+              selModel: {
+                type: 'rows',
+                memory: true
+              },
+              trackOver: true,  
+              exporter: true,
+              controllers: ['staffGridControl'],
+              defaults: {
+                type: 'string',
+                sortable: true,
+                resizable: true,    
+                flex: 1,
+                draggable: true,
+                vtype: 'notempty',
+                menu: true,
+                filter: {
+                  header: true
+                }
+              },
+              clicksToEdit: 1,
+              columnLines: false,
+              columnClickData: true,
+              contextmenu: [
+                  'copy',
+                  'copy+',
+                  '-',
+                  'duplicate',
+                  '-',
+                  'delete',
+                  '-',
+                  'export',
+                  {
+                    text: 'Custom',
+                    imageCls: 'custom-menu-item-cls',
+                    sideText: 'CUSTOM',
+                    handler: function() {
+                      alert('Click on custom item');
+                    }
+                  }
+              ],
+            events: [{
+                select: 'onSelect'
+              }, {
+                clearselect: 'onClearSelect'
+              }, {
+                rowdblclick: 'onRowDBLClick'
+              }, {
+                filter: function() {
+                  setActive(Object.keys(this.filter.filters).length?null:'btn-clearfilter');
+                  }
+              }, {
+                init: function() {
+                  //setActive(Object.keys(this.filter.filters).length?null:'btn-clearfilter');
+                  //this.fitHeight()
+                  }
+              }],
+            columns: [{
+              index: 'id',
+              title: 'Id',
+              editable: false,
+              select: true,
+              type: 'number',
+              flex: 0,
+              width: 60,
+              filter: {
+                header: true,
+                tip: [
+                  'Contêm: 30<br>',
+                  'Menor que: <30<br>',
+                  'Maior que: >30<br>',
+                  'Igual a: 30<br>',
+                  'Diferente de: !=30<br>',
+                  'Composição: <30,>5'
+                ].join("")
+              }
+            },{
+              index: 'nomeCompleto',
+              title: 'Nome Completo',
+              ellipsis: true,
+              filter: {
+                header: true,
+                tip: [
+                  'Contêm: Ted<br>',
+                  'Igual a: =Ted Smith<br>',
+                  'Diferente de: !=Ted Smith<br>'
+                ].join("")
+              }
+              },{
+              index: 'dataDeNascimento',
+              title: 'Aniversário',
+              type: 'date',
+              flex: 0,
+              width: 100,  
+              format: {
+                read: 'd/m',
+                write: 'd-F',
+                edit: 'd/m'
+              },
+            },{
+              index: 'email',
+              title: 'Email',
+              ellipsis: true,
+              filter: {
+                header: true,
+                tip: [
+                  'Contêm: Java<br>',
+                  'Igual a: =Project Manager<br>',
+                ].join("")
+              },
+            },{
+              index: 'cidade',
+              title: 'Cidade',
+              type: 'combo',
+              id: 'comboCidade',
+            multiSelect: true,
+            itemCheckBox: true,
+              data: cidades.map(a => a.nome)
+            },{
+              title: 'Celular',
+              name: 'celular',
+              index: 'celular',
+              type: 'string',
+              format: {
+                inputFn: (v) =>v.toString().replace(/\D/g,"").replace(/^(\d{2})(\d)/g,'($1) $2').replace(/(\d)(\d{4})$/,'$1-$2')
+              }
+            }]
+          });
+          console.log(grid)
+          cidades.map(a => a.nome).forEach(function(item){
+                var navCidadeGroupItem = document.createElement('span');
+                navCidadeGroupItem.classList.add('nav-group-item');
+                navCidadeGroupItem.innerHTML = "<span class='icon icon-network'></span>"+item;
+
+                document.getElementById('nav-cidades').appendChild(navCidadeGroupItem).addEventListener('click',function(){
+                   grid.columns[4].filterField.set(item);
+                   grid.columns[4].filterField.selectItem(grid.columns[4].filterField.data.findIndex(x => x.text==item));
+                   grid.columns[4].filterField.updateInput();
+                });
+
+              })
+         
+        });
+          
+        });
           </script>
       <script>
-        const { autoUpdater } = require("electron-updater")
-        const path = require('path');
-        const BrowserWindow = require('electron').remote.BrowserWindow;
+        function gerarEtiqueta(){
+          
+let request = require('request');
+let fs = require('fs');
+const { shell } = require('electron');
+          console.log(grid.selection.memory.selectedLength);
+          for (let pagina = 0; pagina < Math.ceil(grid.selection.memory.selectedLength/14); pagina++) {
+            
+            let params = {}
+            params['opcao']='etiqueta';
+            params['to']='14';
+            params['tamanhoFonte']='P';
+            for (let i = 0; i < 14; i++) {
+                let data = Object.keys(grid.selection.memory.selected)[i+(14*pagina)] ? grid.getById(Object.keys(grid.selection.memory.selected)[i+(14*pagina)]).data: {};
+                let k=i+1;
+                params['tipo_'+(k)]='des';
+                params['complemento_'+k]='';
+                params['tratamento_'+k]='';
+                params['tipo_Cep_'+k]='';
+                params['cep_'+k]=data.cep?data.cep:'';
+                params['nome_'+k]=data.nomeCompleto?data.nomeCompleto:'';
+                params['empresa_'+k]=data.empresa?data.empresa:'';
+                params['endereco_'+k]=data.rua?data.rua:'';
+                params['numero_'+k]=data.numero?data.numero:'';
+                params['cidade_'+k]=data.cidade?data.cidade:'';
+                params['uf_'+k]=data.estado?data.estado:'';
+                params['selUf_'+k]=params['uf_'+k]
+                params['telefone_'+k]=data.celular?data.celular:'';
+                console.log(params['telefone_'+k],data.telefone,data.celular)
+                params['complemento_'+k]=data.observacoes?data.observacoes:'';
+                params['bairro_'+k]=data.bairro?data.bairro:'';
+            }
+
+            params = Object.keys(params).map(k => encodeURIComponent(k) + '=' + escape(params[k])).join('&');
+            console.log(params);
+            //ipcRenderer.send('gerarEtiquetas',params);
+            request({
+              encoding: null,
+              url: 'http://www2.correios.com.br/enderecador/cartas/act/gerarEtiqueta.cfm',
+              method: 'POST',
+              body: params,
+              headers: {
+                'Content-Type': 'application/x-www-form-urlencoded' },
+              followRedirect : false,
+                
+                //simple: false
+            },(err, httpResponse, body) => {
+              if (err) {
+                return console.error('erro postEtiqueta:', err);
+              }
+              fs.writeFile(__dirname+'/temp'+pagina+'.pdf', body, function(err) {
+                if(err) {
+                    return console.log(err);
+                }
+                shell.openItem(__dirname+'/temp'+pagina+'.pdf');
+              });
+            });
+          }
+         
+          /*
+              var printer = require('printer'),
+              var util = require('util');
+              //console.log("installed printers:\n"+util.inspect(printer.getPrinters(), {colors:true, depth:10}));
+            //    printer.printDirect({data:a,
+            //    printer: 'Microsoft Print to PDF',
+            //    success:function(jobID){
+            //      console.log("sent to printer with ID: "+jobID);
+            //    },
+            //    error:function(err){
+            //      console.log(err);
+            //    }
+            //  });
+            */
+        }      
+        function setActive(id){
+          var c = document.getElementById("groupHome").children;
+          c[0].classList.remove("active");
+          c[1].classList.remove("active");
+          if(id!=null&&id!=''&&id!=undefined)document.getElementById(id).classList.add("active");
+        }
+        document.getElementById('btn-clearfilter').addEventListener('click', function(event) {  
+          setActive('btn-clearfilter');
+          //console.log(grid.filter.filters);
+          if(Object.keys(grid.filter.filters).length){grid.clearFilter();grid.columns[0].filterField.set("");};
+        }); 
+        document.getElementById('btn-geraretiqueta').addEventListener('click', function(event) {  
+          gerarEtiqueta();
+        });
+        document.getElementById('btn-salvar').addEventListener('click', function(event) {  
+          db.serialize(()=>{
+            db.run("CREATE TABLE IF NOT EXISTS individuos ( `nomeCompleto` TEXT, `apelido` TEXT, `dataDeNascimento` TEXT, `email` TEXT, `cidade` TEXT, `cep` INTEGER, `rua` TEXT, `bairro` TEXT, `numero` TEXT, `observacoes` TEXT, `telefone` TEXT, `celular` TEXT, `funcao` INTEGER, `id` INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE )");
+            grid.getData().forEach((p,i)=>{
+              let fields= Object.keys(grid.getData()[i]),
+              values= Object.values(grid.getData()[i]);
+              if(grid.getData()[i]["$selected"] === true||grid.getData()[i]["$selected"] === false){
+                values.splice(15,1);
+                fields.splice(15,1);
+              }
+              values=values.map(v=>`'${v}'`).join(',');
+              db.run("INSERT OR REPLACE INTO individuos ("+fields+") VALUES ("+values+");");
+            });
+            
+          }).then(()=>{
+            const {getCurrentWindow} = require('electron').remote;
+
+          })
+        saveButton.style.display='none';
+        });
         document.getElementById('btn-cadastro').addEventListener('click', function(event) {  
-          // ipcRenderer.send('setPagina', 'index.html');      
-          const modalPath = path.join('file://',__dirname,'cadastro.html');
-          let win = new BrowserWindow({frame: false, width: 1200, height: 700})
-          win.on('close',function(){win=null});
-          win.loadURL(modalPath);
-          win.show();
-        });
-        document.getElementById('btn-atualizar').addEventListener('click', function(event) {  
-          autoUpdater.checkForUpdatesAndNotify()
-        });
+                  ultimoId++;
+                  grid.add({id: ultimoId});
+                  //console.log(grid.scroller.getScrollHeight());
+                  grid.selectById(ultimoId);
+                  grid.scrollToRow(ultimoId);
+                  //staffEditForm.clear();
+                  //staffEditForm.set(grid.store.map[ultimoId].data)
+                  grid.editUser(ultimoId);
+                  //grid.scroll(grid.scroller.getScrollHeight());
+                  grid.scroller.update();
+                  saveButton.style.display='';
+        });       
+            
+        document.getElementById('btn-remover').addEventListener('click', function(event) {  
+          if(grid.getSelection()){
+            Fancy.each(grid.getSelection(), function(a) {
+              grid.remove(a)
+            });
+            grid.selection.clearSelection();
+          }
+        });    
+        document.getElementById('btn-editar').addEventListener('click', function(event) {  
+              selection = grid.getSelection(),
+              item = selection[0];
+          if(grid.getSelection())grid.editUser(item);
+        });   
+
       </script>
   </body>
 </html>

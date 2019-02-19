@@ -1,0 +1,89 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>Correios do Brasil</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<base href="http://www2.correios.com.br/">
+
+<!-- AppInternalsXpert BMX Integration Begin -->
+<script>
+if(!RVBD_EUE){
+   var RVBD_EUE={startJS:Number(new Date()),
+   clientId:'',appId:1,
+   collector:'apmperformance.correios.com.br',
+   collectorHttpPort:80, collectorHttpsPort:443,
+   sv:'0401',
+   ajax:true, sync:true,
+   ajaxResponseTime:true};
+   (function(){
+      var w=window,l=w.addEventListener,m=w.attachEvent,
+      d=document,s='script',t='load',o=RVBD_EUE,
+      r=(('https:'===d.location.protocol)?
+      'https://apmperformance.correios.com.br:443':
+      'http://apmperformance.correios.com.br:80')+
+      '/jsi/riverbed_appinternals.d.'+
+      (o.ajax?'ajax.js':'js'),p=('onpagehide' in w),e=p?'pageshow':t,
+      j=d.createElement(s),x=d.getElementsByTagName(s)[0],
+      h=function(y){o.ldJS=o.ldJS||new Date();o.per=y?y.persisted:null;},
+      i=function(){o.ld=1;};o.cookie=d.cookie;d.cookie=
+      '_op_aixPageId=0; path=/; expires='+(new Date(0)).toGMTString();
+      o.cookieAfterDelete=d.cookie;j.async=1;j.src=r;
+      if(l){l(e,h,false);if(p){l(t,i,false);}}else if(m)
+      {m('on'+e,h);if(p){m('on'+t,i);}}
+      if(o.sync){d.write('<'+s+' src=\''+r+'\'></'+s+'>');}
+      else{x.parentNode.insertBefore(j,x);}
+   })();}
+</script>
+<script>if(!RVBD_EUE_PARAM){var RVBD_EUE_PARAM={};} RVBD_EUE_PARAM.pageId = 'a2_acfaf03c-24c4-4769-abad-0bb8bf32bebf';</script>             
+<!-- AppInternalsXpert BMX Integration End -->
+</head>
+<body leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+<br>
+<br>
+<table width="80%" border="1" align="center" cellpadding="3" cellspacing="0" bordercolor="#003366" class="txt">
+  <tr>
+    <td align="left" valign="top"><table  border="0" cellpadding="0" cellspacing="1">
+        <tr>
+          <td height="91" class="txt"><div align="justify"> <font color="#003366" face="Arial, Helvetica, sans-serif"> <strong>PÁGINA COM ERRO. / <font color="#008080"><em>ERROR ON PAGE</em></font></strong><br>
+              <br>
+              Encontramos um erro na página que deseja acessar.<br>
+              <font size="2" color="#008080"><em>We found an error on the page you're accessing.</em></font><br>
+              <br>
+              Lamentamos o ocorrido e informamos que este erro será automaticamente reportado para nossa área técnica.<br>
+              <font size="2" color="#008080"><em>We're sorry about that, and inform that our team will automatically be notified about this problem.</em></font><br>
+              <br>
+              Tente novamente, por favor, pois o problema pode ser temporário.<br>
+              <font size="2" color="#008080"><em>Try again please. It can be a temporary problem.</em></font><br>
+              <br>
+              Se julgar conveniente deixe uma mensagem em nosso serviço de <a href="sistemas/falecomoscorreios/">Fale com os Correios</a> para ser notificado assim que o problema estiver resolvido.<br>
+              <font size="2" color="#008080"><em>If it is more convenient for you, please feel free to send us a message by <a href="sistemas/falecomoscorreios/">clicking here</a>.</em></font><br>
+              <br>
+              Se preferir volte para nossa <a href="http://www.correios.com.br">Página Principal</a> para continuar navegando em nosso site.<br>
+              <!--ou entre em contato com nossa Central de Atendimento ao Cliente (CAC) no telefone: 0800 570 0100 (só para clientes no Brasil).<br> -->
+              <font size="2" color="#008080"><em>If you prefer, go back to our <a href="http://www.correios.com.br">Home Page</a> to continue navigating on our web site.</em></font>
+              <p> 
+              </font> </div></td>
+        </tr>
+        <tr>
+          <td height="72" class="txt"><div align="center"><br>
+              <img src="home2014/img/layout/logo.png" alt="Correios" /><br>
+              <br>
+            </div></td>
+        </tr>
+      </table></td>
+  </tr>
+</table>
+</body>
+</html>
+
+  <!-- Erro definido -->
+  
+  <!--Navegador (Browser):  -->
+  <!--Data/Hora:</b> 18/02/2019 - 19:38-->
+  <!--Diagnóstico: Error evaluating expression : 
+	Source text : $P{caminhoImagem} + $F{des_cep}.substring(7,8) + ".gif" null <br>The error occurred on line 273.-->
+  <!--Template de Referência: -->
+  <!--Endereço Remoto: 192.168.50.7-->
+  <!--Dados da URL: -->
+  <!--Template Requisitado: /enderecador/cartas/act/gerarEtiqueta.cfm-->
+  

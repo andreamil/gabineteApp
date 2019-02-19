@@ -6,7 +6,7 @@
 
     <link rel="stylesheet" href="./photon-0.1.2-dist/css/photon.min.css">    
     <script>
-      const ipcRenderer = require('electron').ipcRenderer;
+      const {ipcRenderer,shell , dialog} = require('electron');
       window.$ = require('jquery');
       </script>
     <link href="fancygrid/fancy.min.css" rel="stylesheet">
@@ -577,7 +577,7 @@
           
 let request = require('request');
 let fs = require('fs');
-const { shell } = require('electron');
+const { shell , dialog} = require('electron');
           console.log(grid.selection.memory.selectedLength);
           for (let pagina = 0; pagina < Math.ceil(grid.selection.memory.selectedLength/14); pagina++) {
             
@@ -692,13 +692,30 @@ const { shell } = require('electron');
                   saveButton.style.display='';
         });       
             
-        document.getElementById('btn-remover').addEventListener('click', function(event) {  
-          if(grid.getSelection()){
-            Fancy.each(grid.getSelection(), function(a) {
-              grid.remove(a)
-            });
-            grid.selection.clearSelection();
-          }
+        document.getElementById('btn-remover').addEventListener('click', function(event) { 
+          const options = {
+            type: 'question',
+            buttons: ['Cancelar', 'Sim'],
+            defaultId: 0,
+            title: 'Remover',
+            message: 'Remover',
+            detail: 'Remover dados da pessoa?\n'+grid.getSelection(),
+          };
+
+          dialog.showMessageBox(null, options, (response) => {
+            
+            if(response==1){
+              if(grid.getSelection()){
+              //Fancy.each(grid.getSelection(), function(a) {
+                db.delete("individuos","id=?",grid.getSelection()[0].id)
+                ?grid.remove(a)
+                :alert("erro ao remover")
+              //});
+              grid.selection.clearSelection();
+            }
+            }
+          }); 
+          
         });    
         document.getElementById('btn-editar').addEventListener('click', function(event) {  
               selection = grid.getSelection(),

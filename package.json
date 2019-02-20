@@ -1,6 +1,6 @@
 {
   "name": "gabineteapp",
-  "version": "0.2.3",
+  "version": "0.2.2",
   "main": "main.js",
   "scripts": {
     "postinstall": "electron-builder install-app-deps",
@@ -16,6 +16,7 @@
       "icon": "build/icon.ico",
       "publish": "github"
     },
+    "buildDependenciesFromSource": true,
     "nodeVersion": 69
   },
   "author": "Andre",

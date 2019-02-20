@@ -28,10 +28,11 @@ function createWindow () {
     zoomFactor:1.3,
     plugins: true 
   }})
-
+  console.log(
+    app.getPath('userData'));
   // e carrega index.html do app.
   win.loadFile('index.html')
-  win.openDevTools()
+  //win.openDevTools()
   //win.webContents.zoomFactor(2.0).
   
   // Emitido quando a janela é fechada.

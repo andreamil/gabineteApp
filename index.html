@@ -721,11 +721,11 @@ const { shell , dialog} = require('electron');
               if (err) {
                 return console.error('erro postEtiqueta:', err);
               }
-              fs.writeFile(__dirname+'/temp'+pagina+'.pdf', body, function(err) {
+              fs.writeFile(app.getPath('userData')+'/temp'+pagina+'.pdf', body, function(err) {
                 if(err) {
                     return console.log(err);
                 }
-                shell.openItem(__dirname+'/temp'+pagina+'.pdf');
+                shell.openItem(app.getPath('userData')+'/temp'+pagina+'.pdf');
               });
             });
           }

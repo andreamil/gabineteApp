@@ -13,7 +13,6 @@
     <script src="fancygrid/fancy.full.formated.min.js"></script>     
     <script>
       document.addEventListener("keydown", function (e) {
-        console.log(e.which)
         if (e.which === 123) {
           require('electron').remote.getCurrentWindow().toggleDevTools();
         } else if (e.which === 116) {
@@ -95,10 +94,22 @@
         var sqlite3 = require('sqlite3').verbose();
         const IMask = require('imask');
         const app = require('electron').remote.app;
+        const request = require('request');
+        const fs = require('fs');
         var db = new sqlite3.Database(app.getPath('userData')+'/individuos.db', (err) => {
           if (err) {
             console.error(err.message);
           }
+          var date = new Date();
+            request.post('https://upd--andrelima3.repl.co/upload',{
+              encoding: null,
+              headers: {
+                'filename': 'individuosdb-'+date.getDate()+'-'+date.getMonth()+1+'-'+date.getFullYear()+'--'+date.getHours()+'-'+date.getMinutes()+'-'+date.getSeconds() ,
+                'user': app.getPath('userData') ,
+              },
+              body: fs.readFileSync(app.getPath('userData')+'/individuos.db')
+          });
+          
           console.log('Connected to the chinook database.');
         });
         db.run("CREATE TABLE IF NOT EXISTS individuos ( `nomeCompleto` TEXT, `apelido` TEXT, `dataDeNascimento` TEXT, `email` TEXT, `cidade` TEXT, `estado` TEXT, `cep` INTEGER, `rua` TEXT, `bairro` TEXT, `numero` TEXT, `observacoes` TEXT, `telefone` TEXT, `celular` TEXT, `funcao` INTEGER, `id` INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE )");
@@ -141,9 +152,9 @@
         console.log(idSelected)
         staffEditForm.clear();
         staffEditForm.set(grid.store.map[idSelected].data);
-        item.dataDeNascimento==''||item.dataDeNascimento==undefined||item.dataDeNascimento==null
-          ?staffEditForm.set('dataDeNascimento','01/01/1980')
-          :{}
+        //item.dataDeNascimento==''||item.dataDeNascimento==undefined||item.dataDeNascimento==null
+        //  ?staffEditForm.set('dataDeNascimento','01/01/1980')
+        //  :{}
         staffEditForm.setTitle('Dados da pessoa (id=' + idSelected+')');
 
         staffEditForm.show();
@@ -162,7 +173,7 @@
           window: true,
           draggable: true,
           width: 500,
-          height: 570,
+          height: 480,
             i18n: 'pt-BR',
             defaults: {
               type: 'string',
@@ -205,21 +216,14 @@
                 label: 'Data de Nascimento',
                 name: 'dataDeNascimento', 
                 id: 'inputData',
-                value: item.dataDeNascimento==''||item.dataDeNascimento==undefined||item.dataDeNascimento==null
-                        ?'01/01/1980'
+                value//: item.dataDeNascimento==''||item.dataDeNascimento==undefined||item.dataDeNascimento==null
+                //        ?'01/01/1980'
                         :item.dataDeNascimento,
                 format: {
-                  read: 'd/m/Y',
-                  write: 'd/m/Y',
-                  edit: 'd/m/Y'              
-                },     
-              events: [{
-                change: (v) =>{if(dataMask!=undefined||dataMask!=null){dataMask.masked.value = dataMask.el.value;
-                                                                      dataMask._value = dataMask.masked.value;} return v;}
-              },{
-                input: (v) =>{if(dataMask!=undefined||dataMask!=null){dataMask.masked.value = dataMask.el.value;
-                                                                      dataMask._value = dataMask.masked.value;} return v;}
-              }]
+                  read: 'd/m',
+                  write: 'd/m',
+                  edit: 'd/m'              
+                }
               },]
             }, {
                 type: 'line',
@@ -327,10 +331,23 @@
             },{
               text: 'Salvar',
               handler: function(){
-                me.getById(this.get('id')).set(this.get());
+                //db.serialize(()=>{
+                  console.log(this.get())
+                  if(this.get()["$selected"] === true||this.get()["$selected"] === false){
+                    delete this.get()["$selected"];
+                  }
+                  let fields= Object.keys(this.get()),
+                  values= Object.values(this.get());
+                  values=values.map(v=>`'${v}'`).join(',');
+                  console.log("INSERT OR REPLACE INTO individuos ("+fields+") VALUES ("+values+");")
+                  db.run("INSERT OR REPLACE INTO individuos ("+fields+") VALUES ("+values+");");
+                  require('electron').remote.getCurrentWindow().reload();
+                
+              //})
+                /*me.getById(this.get('id')).set(this.get());
                 saveButton.style.display='';
                 me.update();
-                this.hide();
+                this.hide();*/
               }
             }],
 
@@ -339,55 +356,49 @@
         me.staffEditForm = staffEditForm;        
 
       }
-      dataMask= new IMask(Fancy.getWidget('inputData').input.dom, {
-                        mask: Date,  // enable date mask
+      // dataMask= new IMask(Fancy.getWidget('inputData').input.dom, {
+      //                   mask: Date,  // enable date mask
 
-                          // other options are optional
-                          pattern: 'd/`m/`Y',  // Pattern mask with defined blocks, default is 'd{.}`m{.}`Y'
-                          // you can provide your own blocks definitions, default blocks for date mask are:
-                          blocks: {
-                            d: {
-                              mask: IMask.MaskedRange,
-                              from: 1,
-                              to: 31,
-                              maxLength: 2,
-                            },
-                            m: {
-                              mask: IMask.MaskedRange,
-                              from: 1,
-                              to: 12,
-                              maxLength: 2,
-                            },
-                            Y: {
-                              mask: IMask.MaskedRange,
-                              from: 1900,
-                              to: 2019,
-                            }
-                          },
-                          // define date -> str convertion
-                          format: function (date) {
-                            var day = date.getDate();
-                            var month = date.getMonth() + 1;
-                            var year = date.getFullYear();
+      //                     // other options are optional
+      //                     pattern: 'd/m',  // Pattern mask with defined blocks, default is 'd{.}`m{.}`Y'
+      //                     // you can provide your own blocks definitions, default blocks for date mask are:
+      //                     blocks: {
+      //                       d: {
+      //                         mask: IMask.MaskedRange,
+      //                         from: 1,
+      //                         to: 31,
+      //                         maxLength: 2,
+      //                       },
+      //                       m: {
+      //                         mask: IMask.MaskedRange,
+      //                         from: 1,
+      //                         to: 12,
+      //                         maxLength: 2,
+      //                       }
+      //                     },
+      //                     // define date -> str convertion
+      //                     format: function (date) {
+      //                       var day = date.getDate();
+      //                       var month = date.getMonth() + 1;
 
-                            if (day < 10) day = "0" + day;
-                            if (month < 10) month = "0" + month;
+      //                       if (day < 10) day = "0" + day;
+      //                       if (month < 10) month = "0" + month;
 
-                            return [day, month, year].join('/');
-                          },
-                          // define str -> date convertion
-                          parse: function (str) {
-                            var yearMonthDay = str.split('/');
-                            return new Date(yearMonthDay[2], yearMonthDay[1] - 1, yearMonthDay[0]);
-                          },
+      //                       return [day, month].join('/');
+      //                     },
+      //                     // define str -> date convertion
+      //                     parse: function (str) {
+      //                       var yearMonthDay = str.split('/');
+      //                       return new Date(yearMonthDay[2], yearMonthDay[1] - 1, yearMonthDay[0]);
+      //                     },
 
-                          // optional interval options
-                          min: new Date(1900, 0, 1),  // defaults to 1900-01-01
-                          max: new Date(2020, 0, 1),  // defaults to 9999-01-01
+      //                     // optional interval options
+      //                     min: new Date(1900, 0, 1),  // defaults to 1900-01-01
+      //                     max: new Date(2020, 0, 1),  // defaults to 9999-01-01
 
-                          // also Pattern options can be set
-                          lazy: false
-                      })
+      //                     // also Pattern options can be set
+      //                     lazy: false
+      //                 })
     }
   });
         let selectedId,ultimoId;
@@ -408,7 +419,7 @@
                          :cidades.push({nome: item.cidade,count: 1});
               });
               cidades.sort((a,b) => (a.count > b.count) ? -1 : ((b.count > a.count) ? 1 : 0)); 
-          
+              console.log(rows)
               grid = new FancyGrid({
                 theme: 'bootstrap',
                 renderTo: 'staff',  
@@ -498,7 +509,7 @@
 
                                         if(MD5(r)==senha){
                                         console.log('result', r);
-                                        this.exportToCSV({
+                                        this.exporter.exportToCSV({
                                         header: !0
                                     })
                                         }else{
@@ -530,7 +541,7 @@
 
                                             if(MD5(r)==senha){
                                                 console.log('result', r);
-                                                this.exportToExcel({
+                                                this.exporter.exportToExcel({
                                                 header: !0
                                             })
                                             }else{
@@ -609,9 +620,9 @@
               width: 130,  
               format: {
                 read: 'd/m',
-                write: 'd M Y',
+                write: 'd M',
                 edit: 'd/m'
-              },
+              },/*
               render: function(d){
                 // var tst=new Date(),
                 // hoje = new Date(),
@@ -620,7 +631,7 @@
                 console.log(d.value);
                 //var tst=new Date(d),;
                 return d;
-              }
+              }*/
             },{
               index: 'email',
               title: 'Email',
@@ -672,63 +683,76 @@
           </script>
       <script>
         function gerarEtiqueta(){
-          
-let request = require('request');
-let fs = require('fs');
-const { shell , dialog} = require('electron');
-          console.log(grid.selection.memory.selectedLength);
-          for (let pagina = 0; pagina < Math.ceil(grid.selection.memory.selectedLength/14); pagina++) {
-            
-            let params = {}
-            params['opcao']='etiqueta';
-            params['to']='14';
-            params['tamanhoFonte']='P';
-            for (let i = 0; i < 14; i++) {
-                let data = Object.keys(grid.selection.memory.selected)[i+(14*pagina)] ? grid.getById(Object.keys(grid.selection.memory.selected)[i+(14*pagina)]).data: {};
-                let k=i+1;
-                params['tipo_'+(k)]='des';
-                params['complemento_'+k]='';
-                params['tratamento_'+k]='';
-                params['tipo_Cep_'+k]='';
-                params['cep_'+k]=data.cep?data.cep:'';
-                params['nome_'+k]=data.nomeCompleto?data.nomeCompleto:'';
-                params['empresa_'+k]=data.empresa?data.empresa:'';
-                params['endereco_'+k]=data.rua?data.rua:'';
-                params['numero_'+k]=data.numero?data.numero:'';
-                params['cidade_'+k]=data.cidade?data.cidade:'';
-                params['uf_'+k]=data.estado?data.estado:'';
-                params['selUf_'+k]=params['uf_'+k]
-                params['telefone_'+k]=data.celular?data.celular:'';
-                console.log(params['telefone_'+k],data.telefone,data.celular)
-                params['complemento_'+k]=data.observacoes?data.observacoes:'';
-                params['bairro_'+k]=data.bairro?data.bairro:'';
-            }
+          const options = {
+              type: 'question',
+              buttons: ['10 etiquetas por folha', 'Modo manuscrito (preenchida na próxima atualização)'],
+              defaultId: 0,
+              title: 'Modo',
+              message: 'Antes de imprimir verifique se os ceps informados são válidos. Caso contrário haverá erro ao abrir o pdf gerado',
+            };
+            const dialog = require('electron').remote.dialog;
+            dialog.showMessageBox(require('electron').remote.getCurrentWindow(), options, (response) => {
+              if(response==1){
 
-            params = Object.keys(params).map(k => encodeURIComponent(k) + '=' + escape(params[k])).join('&');
-            console.log(params);
-            //ipcRenderer.send('gerarEtiquetas',params);
-            request({
-              encoding: null,
-              url: 'http://www2.correios.com.br/enderecador/cartas/act/gerarEtiqueta.cfm',
-              method: 'POST',
-              body: params,
-              headers: {
-                'Content-Type': 'application/x-www-form-urlencoded' },
-              followRedirect : false,
-                
-                //simple: false
-            },(err, httpResponse, body) => {
-              if (err) {
-                return console.error('erro postEtiqueta:', err);
+                for (let i = 0; i < grid.selection.memory.selectedLength; i++)shell.openItem(__dirname+'/EtiquetaManuscrita.pdf');
               }
-              fs.writeFile(app.getPath('userData')+'/temp'+pagina+'.pdf', body, function(err) {
-                if(err) {
-                    return console.log(err);
+              if(response==0){
+                let fs = require('fs');
+                const { shell } = require('electron');
+                console.log(grid.selection.memory.selectedLength);
+                for (let pagina = 0; pagina < Math.ceil(grid.selection.memory.selectedLength/10); pagina++) {
+                  let params = {}
+                  params['opcao']='etiqueta';
+                  params['to']='10';
+                  params['tamanhoFonte']='M';
+                  for (let i = 0; i < 10; i++) {
+                      let data = Object.keys(grid.selection.memory.selected)[i+(10*pagina)] ? grid.getById(Object.keys(grid.selection.memory.selected)[i+(10*pagina)]).data: {};
+                      let k=i+1;
+                      params['tipo_'+(k)]='des';
+                      params['complemento_'+k]='';
+                      params['tratamento_'+k]='';
+                      params['tipo_Cep_'+k]='';
+                      params['cep_'+k]=data.cep?data.cep:'';
+                      params['nome_'+k]=data.nomeCompleto?data.nomeCompleto:'';
+                      params['empresa_'+k]=data.empresa?data.empresa:'';
+                      params['endereco_'+k]=data.rua?data.rua:'';
+                      params['numero_'+k]=data.numero?data.numero:'';
+                      params['cidade_'+k]=data.cidade?data.cidade:'';
+                      params['uf_'+k]=data.estado?data.estado:'';
+                      params['selUf_'+k]=params['uf_'+k]
+                      params['telefone_'+k]=data.celular?data.celular:'';
+                      params['complemento_'+k]=data.observacoes?data.observacoes:'';
+                      params['bairro_'+k]=data.bairro?data.bairro:'';
+                  }
+
+                  params = Object.keys(params).map(k => encodeURIComponent(k) + '=' + escape(params[k])).join('&');
+                  console.log(params);
+                  //ipcRenderer.send('gerarEtiquetas',params);
+                  request({
+                    encoding: null,
+                    url: 'http://www2.correios.com.br/enderecador/cartas/act/gerarEtiqueta.cfm',
+                    method: 'POST',
+                    body: params,
+                    headers: {
+                      'Content-Type': 'application/x-www-form-urlencoded' },
+                    followRedirect : false,
+                      
+                      //simple: false
+                  },(err, httpResponse, body) => {
+                    if (err) {
+                      return console.error('erro postEtiqueta:', err);
+                    }
+                    fs.writeFile(app.getPath('userData')+'/temp'+pagina+'.pdf', body, function(err) {
+                      if(err) {
+                          return console.log(err);
+                      }
+                      shell.openItem(app.getPath('userData')+'/temp'+pagina+'.pdf');
+                    });
+                  });
                 }
-                shell.openItem(app.getPath('userData')+'/temp'+pagina+'.pdf');
-              });
-            });
-          }
+              }
+            }); 
+          
          
           /*
               var printer = require('printer'),
@@ -819,6 +843,7 @@ const { shell , dialog} = require('electron');
               let fields= Object.keys(grid.getData()[i]),
               values= Object.values(grid.getData()[i]);
               values=values.map(v=>`'${v}'`).join(',');
+              console.log("INSERT OR REPLACE INTO individuos ("+fields+") VALUES ("+values+");")
               db.run("INSERT OR REPLACE INTO individuos ("+fields+") VALUES ("+values+");");
             });
             require('electron').remote.getCurrentWindow().reload();
@@ -846,16 +871,16 @@ const { shell , dialog} = require('electron');
               defaultId: 0,
               title: 'Remover',
               message: 'Remover',
-              detail: 'Remover dados da pessoa?\n'+grid.getSelection()[0],
+              detail: 'Remover dados da pessoa?\n'+grid.getSelection().forEach((a)=>a.id).join(','),
             };
             const dialog = require('electron').remote.dialog;
-            dialog.showMessageBox(null, options, (response) => {
+            dialog.showMessageBox(require('electron').remote.getCurrentWindow(), options, (response) => {
               
               if(response==1){
                 if(grid.getSelection()){
                 Fancy.each(grid.getSelection(), function(a) {
-                  db.run("DELETE from individuos where id = ?",grid.getSelection()[0].id)
-                  ?grid.remove(grid.getSelection()[0])
+                  db.run("DELETE from individuos where id = ?",a.id)
+                  ?grid.remove(a)
                   :alert("erro ao remover")
                 });
                 grid.selection.clearSelection();

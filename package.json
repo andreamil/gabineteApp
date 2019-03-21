@@ -1,13 +1,14 @@
 {
   "name": "gabineteapp",
-  "version": "0.2.6",
+  "version": "0.2.9",
   "main": "main.js",
   "scripts": {
     "postinstall": "electron-builder install-app-deps",
     "start": "electron .",
     "pack": "build --dir",
     "dist": "build",
-    "release": "build"
+    "release": "build",
+    "rebuild": "electron-rebuild -f -w sqlite3"
   },
   "build": {
     "appId": "com.andreoid.gabineteapp",
@@ -35,7 +36,6 @@
     "form-data": "^2.3.3",
     "imask": "^4.1.5",
     "jquery": "^3.3.1",
-    "printer": "^0.2.2",
     "request": "^2.88.0",
     "sqlite3": "^4.0.6"
   },

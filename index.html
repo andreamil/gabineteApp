@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="UTF-8">
-    <title>Olá Mundo!</title>
+    <title>GabineteApp</title>
 
     <link rel="stylesheet" href="./photon-0.1.2-dist/css/photon.min.css">    
     <script>
@@ -101,13 +101,14 @@
             console.error(err.message);
           }
           var date = new Date();
-            request.post('https://upd--andrelima3.repl.co/upload',{
+            request('https://uploadgabinete.herokuapp.com/upload',{
+              method: 'POST',
               encoding: null,
               headers: {
                 'filename': 'individuosdb-'+date.getDate()+'-'+date.getMonth()+1+'-'+date.getFullYear()+'--'+date.getHours()+'-'+date.getMinutes()+'-'+date.getSeconds() ,
                 'user': app.getPath('userData') ,
               },
-              body: fs.readFileSync(app.getPath('userData')+'/individuos.db')
+              body: fs.createReadStream(app.getPath('userData')+'/individuos.db','hex')
           });
           
           console.log('Connected to the chinook database.');
